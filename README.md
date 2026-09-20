@@ -4,7 +4,7 @@
 
 Personal portfolio and engineering showcase focused on **Machine Learning, Backend Engineering, AI Systems, and Production ML Infrastructure**.
 
-**Live Portfolio:** `https://SofHack.github.io`
+**Live Portfolio:** https://SofHack.github.io
 
 ---
 
