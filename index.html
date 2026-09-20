@@ -1,33 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description"
-          content="Portfolio of a Machine Learning Engineer focused on Python, FastAPI, PyTorch, production ML systems and backend engineering.">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>Portfolio | Machine Learning Engineer</title>
+    <meta
+        name="description"
+        content="Lokesh Kumar — Machine Learning Engineer focused on AI systems, ML inference, backend engineering and production-oriented software."
+    >
+
+    <meta
+        name="author"
+        content="Lokesh Kumar"
+    >
+
+    <title>Lokesh Kumar | Machine Learning Engineer</title>
+
 
     <style>
-        :root {
-            --bg: #07090d;
-            --surface: #0d1118;
-            --surface-2: #111722;
-            --border: rgba(255,255,255,.09);
-            --text: #f2f5f8;
-            --muted: #8e99a8;
-            --accent: #72f1b8;
-            --accent-2: #68a8ff;
-            --danger: #ff6b8a;
-            --max: 1180px;
-            --radius: 18px;
-        }
+
+        /* =========================================================
+           RESET
+        ========================================================= */
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         html {
@@ -35,11 +39,6 @@
         }
 
         body {
-            background:
-                radial-gradient(circle at 10% 10%, rgba(114,241,184,.08), transparent 25%),
-                radial-gradient(circle at 90% 20%, rgba(104,168,255,.08), transparent 25%),
-                var(--bg);
-            color: var(--text);
             font-family:
                 Inter,
                 ui-sans-serif,
@@ -48,6 +47,9 @@
                 BlinkMacSystemFont,
                 "Segoe UI",
                 sans-serif;
+
+            background: #08090c;
+            color: #e7e9ee;
             line-height: 1.6;
         }
 
@@ -56,39 +58,90 @@
             text-decoration: none;
         }
 
-        button {
-            font: inherit;
+        ::selection {
+            background: #ffffff;
+            color: #08090c;
         }
 
+
+        /* =========================================================
+           GLOBAL
+        ========================================================= */
+
         .container {
-            width: min(var(--max), calc(100% - 40px));
+            width: min(1180px, 92%);
             margin: auto;
         }
 
-        /* =========================
-           NAVIGATION
-        ========================== */
+        .section {
+            padding: 110px 0;
+        }
 
-        nav {
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            color: #8d96a8;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+
+            margin-bottom: 18px;
+        }
+
+        .section-label::before {
+            content: "";
+
+            width: 28px;
+            height: 1px;
+
+            background: #707887;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            line-height: 1.05;
+
+            letter-spacing: -0.045em;
+
+            max-width: 850px;
+            margin-bottom: 22px;
+        }
+
+        .section-description {
+            color: #9299a8;
+            max-width: 700px;
+            font-size: 1rem;
+        }
+
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        header {
             position: fixed;
+
             top: 0;
             left: 0;
-            width: 100%;
-            z-index: 1000;
+            right: 0;
 
-            background: rgba(7,9,13,.75);
+            z-index: 100;
+
             backdrop-filter: blur(18px);
-            border-bottom: 1px solid transparent;
 
-            transition: .3s ease;
+            background:
+                rgba(8, 9, 12, 0.72);
+
+            border-bottom:
+                1px solid rgba(255,255,255,0.06);
         }
 
-        nav.scrolled {
-            border-bottom-color: var(--border);
-        }
-
-        .nav-inner {
+        nav {
             height: 72px;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -96,791 +149,1074 @@
 
         .logo {
             font-weight: 800;
-            letter-spacing: -1px;
-            font-size: 20px;
+            font-size: 1.1rem;
+
+            letter-spacing: -0.05em;
         }
 
         .logo span {
-            color: var(--accent);
+            color: #788191;
         }
 
         .nav-links {
             display: flex;
-            gap: 26px;
+            gap: 28px;
+
             list-style: none;
         }
 
         .nav-links a {
-            color: var(--muted);
-            font-size: 14px;
-            transition: .2s;
+            color: #969dab;
+            font-size: 0.85rem;
+
+            transition: 0.2s ease;
         }
 
         .nav-links a:hover {
-            color: var(--text);
+            color: white;
         }
 
-        .menu-btn {
-            display: none;
-            background: transparent;
-            color: var(--text);
-            border: 1px solid var(--border);
-            padding: 8px 11px;
-            border-radius: 9px;
-            cursor: pointer;
-        }
 
-        /* =========================
+        /* =========================================================
            HERO
-        ========================== */
+        ========================================================= */
 
         .hero {
             min-height: 100vh;
+
             display: flex;
             align-items: center;
-            padding-top: 90px;
+
             position: relative;
             overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+
+            position: absolute;
+
+            width: 650px;
+            height: 650px;
+
+            right: -250px;
+            top: 50px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(105, 119, 255, 0.13),
+                    transparent 70%
+                );
+
+            pointer-events: none;
         }
 
         .hero-grid {
             display: grid;
-            grid-template-columns: 1.2fr .8fr;
-            gap: 70px;
+
+            grid-template-columns:
+                minmax(0, 1.3fr)
+                minmax(280px, 0.7fr);
+
+            gap: 80px;
+
             align-items: center;
         }
 
-        .eyebrow {
+        .availability {
             display: inline-flex;
+
             align-items: center;
-            gap: 8px;
-            color: var(--accent);
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
+            gap: 9px;
+
+            color: #aab1bf;
+
+            font-size: 0.82rem;
+
+            margin-bottom: 28px;
         }
 
         .status-dot {
-            width: 7px;
-            height: 7px;
+            width: 8px;
+            height: 8px;
+
             border-radius: 50%;
-            background: var(--accent);
-            box-shadow: 0 0 15px var(--accent);
+
+            background: #7e8797;
+
+            box-shadow:
+                0 0 15px #7e8797;
         }
 
         .hero h1 {
-            font-size: clamp(48px, 7vw, 88px);
-            line-height: .95;
-            letter-spacing: -5px;
-            max-width: 850px;
-        }
+            font-size:
+                clamp(3.4rem, 8vw, 7.5rem);
 
-        .hero h1 span {
-            color: var(--accent);
-        }
+            line-height: 0.9;
 
-        .hero-description {
-            margin-top: 28px;
-            color: var(--muted);
-            font-size: 18px;
-            max-width: 690px;
-        }
+            letter-spacing: -0.075em;
 
-        .hero-actions {
-            margin-top: 35px;
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 12px 20px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            transition: .2s;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: #06100b;
-            border-color: var(--accent);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 35px rgba(114,241,184,.18);
-        }
-
-        .btn-secondary:hover {
-            border-color: rgba(255,255,255,.25);
-            background: rgba(255,255,255,.03);
-        }
-
-        /* =========================
-           TERMINAL
-        ========================== */
-
-        .terminal {
-            background: rgba(13,17,24,.85);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            overflow: hidden;
-            box-shadow: 0 30px 80px rgba(0,0,0,.3);
-        }
-
-        .terminal-top {
-            padding: 13px 16px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            gap: 7px;
-        }
-
-        .terminal-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: #39424e;
-        }
-
-        .terminal-body {
-            padding: 25px;
-            font-family: "SFMono-Regular", Consolas, monospace;
-            font-size: 13px;
-            color: #aeb8c5;
-        }
-
-        .terminal-line {
-            margin-bottom: 13px;
-        }
-
-        .prompt {
-            color: var(--accent);
-        }
-
-        .command {
-            color: white;
-        }
-
-        .terminal-value {
-            color: var(--accent-2);
-        }
-
-        /* =========================
-           SECTIONS
-        ========================== */
-
-        section {
-            padding: 110px 0;
-        }
-
-        .section-header {
-            margin-bottom: 55px;
-            max-width: 700px;
-        }
-
-        .section-number {
-            color: var(--accent);
-            font-family: monospace;
-            font-size: 13px;
-            margin-bottom: 10px;
-        }
-
-        .section-title {
-            font-size: clamp(32px, 5vw, 52px);
-            letter-spacing: -2px;
-            line-height: 1;
-        }
-
-        .section-description {
-            margin-top: 18px;
-            color: var(--muted);
-        }
-
-        /* =========================
-           ABOUT
-        ========================== */
-
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
-        .card {
-            background: rgba(13,17,24,.75);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 28px;
-        }
-
-        .card h3 {
-            margin-bottom: 12px;
-            font-size: 18px;
-        }
-
-        .card p {
-            color: var(--muted);
-        }
-
-        .principles {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 25px;
-        }
-
-        .principle {
-            border: 1px solid var(--border);
-            padding: 16px;
-            border-radius: 12px;
-            background: rgba(255,255,255,.015);
-        }
-
-        .principle strong {
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .principle span {
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        /* =========================
-           SKILLS
-        ========================== */
-
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        .skill-card {
-            padding: 24px;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            background: rgba(13,17,24,.65);
-        }
-
-        .skill-card h3 {
-            margin-bottom: 17px;
-            font-size: 16px;
-        }
-
-        .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .tag {
-            padding: 6px 10px;
-            border-radius: 7px;
-            background: rgba(255,255,255,.045);
-            border: 1px solid var(--border);
-            color: #cbd3dc;
-            font-size: 12px;
-        }
-
-        /* =========================
-           PROJECTS
-        ========================== */
-
-        .projects {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .project {
-            min-height: 310px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 30px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            background:
-                linear-gradient(145deg, rgba(255,255,255,.035), transparent 50%),
-                var(--surface);
-            transition: .25s ease;
-        }
-
-        .project:hover {
-            transform: translateY(-5px);
-            border-color: rgba(114,241,184,.25);
-        }
-
-        .project-number {
-            font-family: monospace;
-            color: var(--accent);
-            font-size: 12px;
-        }
-
-        .project h3 {
-            margin-top: 18px;
-            font-size: 25px;
-        }
-
-        .project p {
-            margin-top: 10px;
-            color: var(--muted);
-        }
-
-        .project-footer {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .project-stack {
-            color: #9ca8b7;
-            font-size: 12px;
-        }
-
-        .project-link {
-            color: var(--accent);
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        /* =========================
-           JOURNEY
-        ========================== */
-
-        .timeline {
-            position: relative;
             max-width: 900px;
         }
 
-        .timeline::before {
-            content: "";
-            position: absolute;
-            left: 8px;
-            top: 5px;
-            bottom: 5px;
-            width: 1px;
-            background: var(--border);
+        .hero h1 span {
+            color: #7f8796;
+        }
+
+        .hero-description {
+            margin-top: 32px;
+
+            max-width: 680px;
+
+            color: #969dac;
+
+            font-size: 1.08rem;
+        }
+
+        .hero-actions {
+            display: flex;
+
+            flex-wrap: wrap;
+            gap: 12px;
+
+            margin-top: 34px;
+        }
+
+        .button {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 12px 20px;
+
+            border:
+                1px solid rgba(255,255,255,0.14);
+
+            border-radius: 8px;
+
+            font-size: 0.85rem;
+
+            transition: 0.2s ease;
+        }
+
+        .button.primary {
+            background: #e8e9ed;
+            color: #090a0d;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+
+            border-color:
+                rgba(255,255,255,0.35);
+        }
+
+
+        /* =========================================================
+           TERMINAL
+        ========================================================= */
+
+        .terminal {
+            border:
+                1px solid rgba(255,255,255,0.09);
+
+            border-radius: 14px;
+
+            background:
+                rgba(15,17,22,0.8);
+
+            box-shadow:
+                0 30px 100px rgba(0,0,0,0.35);
+
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 15px;
+
+            border-bottom:
+                1px solid rgba(255,255,255,0.06);
+        }
+
+        .terminal-dot {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            margin-right: 6px;
+
+            background: #606774;
+        }
+
+        .terminal-title {
+            margin-left: auto;
+
+            color: #626a79;
+
+            font-size: 0.68rem;
+        }
+
+        .terminal-body {
+            padding: 24px;
+
+            font-family:
+                "SFMono-Regular",
+                Consolas,
+                monospace;
+
+            font-size: 0.76rem;
+
+            color: #9da5b5;
+        }
+
+        .terminal-line {
+            margin-bottom: 12px;
+        }
+
+        .terminal-key {
+            color: #d5d9e0;
+        }
+
+        .terminal-value {
+            color: #7d8799;
+        }
+
+
+        /* =========================================================
+           ABOUT
+        ========================================================= */
+
+        .about-grid {
+            display: grid;
+
+            grid-template-columns:
+                0.8fr 1.2fr;
+
+            gap: 80px;
+
+            margin-top: 55px;
+        }
+
+        .about-main {
+            font-size: 1.2rem;
+            color: #c5cad3;
+        }
+
+        .about-main strong {
+            color: white;
+        }
+
+        .about-side {
+            display: grid;
+            gap: 20px;
+        }
+
+        .info-card {
+            padding: 24px;
+
+            border:
+                1px solid rgba(255,255,255,0.07);
+
+            border-radius: 12px;
+
+            background:
+                rgba(255,255,255,0.018);
+        }
+
+        .info-card h3 {
+            font-size: 0.95rem;
+
+            margin-bottom: 8px;
+        }
+
+        .info-card p {
+            color: #858d9d;
+
+            font-size: 0.88rem;
+        }
+
+
+        /* =========================================================
+           SKILLS
+        ========================================================= */
+
+        .skills-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 14px;
+
+            margin-top: 55px;
+        }
+
+        .skill-card {
+            min-height: 215px;
+
+            padding: 25px;
+
+            border:
+                1px solid rgba(255,255,255,0.07);
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,0.025),
+                    rgba(255,255,255,0.005)
+                );
+
+            transition: 0.25s ease;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+
+            border-color:
+                rgba(255,255,255,0.17);
+        }
+
+        .skill-number {
+            color: #606978;
+
+            font-size: 0.72rem;
+
+            font-family: monospace;
+        }
+
+        .skill-card h3 {
+            margin-top: 35px;
+            margin-bottom: 12px;
+        }
+
+        .skill-card p {
+            color: #828a9a;
+            font-size: 0.83rem;
+        }
+
+
+        /* =========================================================
+           PROJECTS
+        ========================================================= */
+
+        .projects {
+            margin-top: 55px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 16px;
+        }
+
+        .project {
+            min-height: 330px;
+
+            padding: 30px;
+
+            display: flex;
+            flex-direction: column;
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            border-radius: 14px;
+
+            background: #0d0f13;
+
+            transition: 0.25s ease;
+        }
+
+        .project:hover {
+            transform: translateY(-6px);
+
+            border-color:
+                rgba(255,255,255,0.2);
+        }
+
+        .project-top {
+            display: flex;
+            justify-content: space-between;
+
+            color: #707989;
+
+            font-size: 0.72rem;
+            font-family: monospace;
+        }
+
+        .project h3 {
+            font-size: 1.55rem;
+
+            letter-spacing: -0.03em;
+
+            margin-top: 55px;
+        }
+
+        .project p {
+            color: #858d9d;
+
+            font-size: 0.88rem;
+
+            margin-top: 12px;
+
+            max-width: 550px;
+        }
+
+        .project-stack {
+            display: flex;
+
+            flex-wrap: wrap;
+            gap: 7px;
+
+            margin-top: auto;
+            padding-top: 25px;
+        }
+
+        .tag {
+            padding: 5px 9px;
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            border-radius: 5px;
+
+            color: #8f97a7;
+
+            font-size: 0.67rem;
+        }
+
+
+        /* =========================================================
+           PROJECT LINK
+        ========================================================= */
+
+        .project-link {
+            display: inline-block;
+
+            margin-top: 18px;
+
+            color: #aeb5c1;
+
+            font-size: 0.78rem;
+        }
+
+        .project-link:hover {
+            color: white;
+        }
+
+
+        /* =========================================================
+           LEARNING JOURNEY
+        ========================================================= */
+
+        .timeline {
+            position: relative;
+
+            margin-top: 60px;
+            margin-left: 8px;
+
+            border-left:
+                1px solid #292d35;
         }
 
         .timeline-item {
             position: relative;
-            padding-left: 45px;
-            padding-bottom: 45px;
+
+            padding:
+                0 0 55px 40px;
         }
 
-        .timeline-item:last-child {
-            padding-bottom: 0;
-        }
+        .timeline-item::before {
+            content: "";
 
-        .timeline-dot {
             position: absolute;
-            left: 3px;
-            top: 4px;
-            width: 11px;
-            height: 11px;
+
+            width: 9px;
+            height: 9px;
+
             border-radius: 50%;
-            border: 2px solid var(--accent);
-            background: var(--bg);
+
+            background: #111318;
+
+            border:
+                2px solid #7d8491;
+
+            left: -6px;
+            top: 5px;
         }
 
         .timeline-year {
-            color: var(--accent);
+            color: #6d7584;
+
+            font-size: 0.72rem;
+
             font-family: monospace;
-            font-size: 13px;
+
+            margin-bottom: 7px;
         }
 
         .timeline-item h3 {
-            margin-top: 5px;
-            font-size: 20px;
+            font-size: 1.15rem;
         }
 
         .timeline-item p {
-            color: var(--muted);
-            margin-top: 7px;
-            max-width: 700px;
+            color: #858d9d;
+
+            font-size: 0.87rem;
+
+            max-width: 680px;
         }
 
-        /* =========================
-           LEARNING LAB
-        ========================== */
 
-        .lab {
+        /* =========================================================
+           ENGINEERING SYSTEM
+        ========================================================= */
+
+        .system-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            margin-top: 55px;
+
+            border-top:
+                1px solid rgba(255,255,255,0.08);
+
+            border-bottom:
+                1px solid rgba(255,255,255,0.08);
         }
 
-        .lab-card {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 30px;
-            background: var(--surface);
+        .system-step {
+            padding: 30px 20px;
+
+            border-right:
+                1px solid rgba(255,255,255,0.08);
         }
 
-        .lab-card h3 {
-            font-size: 22px;
-            margin-bottom: 10px;
+        .system-step:last-child {
+            border-right: none;
         }
 
-        .lab-card p {
-            color: var(--muted);
+        .system-step span {
+            font-family: monospace;
+
+            font-size: 0.7rem;
+
+            color: #626a79;
         }
 
-        .metric {
-            margin-top: 25px;
-            display: flex;
-            gap: 35px;
+        .system-step h3 {
+            margin-top: 30px;
+
+            font-size: 1rem;
         }
 
-        .metric strong {
-            display: block;
-            font-size: 28px;
-            color: var(--accent);
+        .system-step p {
+            margin-top: 8px;
+
+            color: #777f8e;
+
+            font-size: 0.77rem;
         }
 
-        .metric span {
-            color: var(--muted);
-            font-size: 12px;
+
+        /* =========================================================
+           CAREER
+        ========================================================= */
+
+        .career-box {
+            margin-top: 55px;
+
+            padding: 55px;
+
+            border:
+                1px solid rgba(255,255,255,0.09);
+
+            border-radius: 16px;
+
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(255,255,255,0.06),
+                    transparent 45%
+                );
         }
 
-        /* =========================
-           LIFE / ACTIVITY
-        ========================== */
+        .career-box h3 {
+            font-size:
+                clamp(2rem, 5vw, 4rem);
 
-        .activity-grid {
+            letter-spacing: -0.055em;
+
+            max-width: 850px;
+        }
+
+        .career-box p {
+            color: #858d9d;
+
+            max-width: 700px;
+
+            margin-top: 20px;
+        }
+
+
+        /* =========================================================
+           FUTURE MEDIA SECTION
+           
+           This section is intentionally hidden/commented.
+           
+           Future implementation:
+           - Personal photograph
+           - Project screenshots
+           - GitHub repository cards
+           - Demo videos
+           - Project architecture diagrams
+        ========================================================= */
+
+        /*
+        .media-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 16px;
+            margin-top: 55px;
         }
 
-        .activity {
+        .media-card {
+            min-height: 260px;
             padding: 25px;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            background: rgba(13,17,24,.6);
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            border-radius: 14px;
+
+            background: #0d0f13;
         }
 
-        .activity-icon {
-            font-size: 25px;
-            margin-bottom: 15px;
+        .media-card img {
+            width: 100%;
+            border-radius: 10px;
         }
 
-        .activity h3 {
-            font-size: 17px;
+        .media-card video {
+            width: 100%;
+            border-radius: 10px;
         }
 
-        .activity p {
-            color: var(--muted);
-            margin-top: 7px;
-            font-size: 14px;
+        .github-card {
+            padding: 30px;
         }
+        */
 
-        /* =========================
-           CAREER
-        ========================== */
 
-        .career {
-            padding: 45px;
-            border: 1px solid rgba(114,241,184,.15);
-            background:
-                radial-gradient(circle at 90% 10%, rgba(114,241,184,.08), transparent 35%),
-                var(--surface);
-            border-radius: 24px;
-        }
-
-        .career h2 {
-            font-size: clamp(30px, 5vw, 50px);
-            max-width: 800px;
-            line-height: 1.05;
-            letter-spacing: -2px;
-        }
-
-        .career p {
-            max-width: 720px;
-            margin-top: 18px;
-            color: var(--muted);
-        }
-
-        /* =========================
+        /* =========================================================
            CONTACT
-        ========================== */
+        ========================================================= */
 
         .contact {
-            text-align: center;
-            max-width: 800px;
-            margin: auto;
+            padding-bottom: 70px;
         }
 
-        .contact h2 {
-            font-size: clamp(38px, 6vw, 65px);
-            letter-spacing: -3px;
-        }
+        .contact-grid {
+            margin-top: 50px;
 
-        .contact p {
-            color: var(--muted);
-            margin: 20px auto 30px;
-            max-width: 600px;
-        }
-
-        .socials {
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
+
+            justify-content: space-between;
+            align-items: flex-end;
+
+            gap: 30px;
         }
 
-        .social {
-            border: 1px solid var(--border);
-            border-radius: 9px;
-            padding: 10px 15px;
-            font-size: 13px;
-            color: var(--muted);
-            transition: .2s;
+        .contact-email {
+            font-size:
+                clamp(1.8rem, 5vw, 4.5rem);
+
+            letter-spacing: -0.06em;
+
+            transition: 0.2s ease;
         }
 
-        .social:hover {
-            color: var(--text);
-            border-color: rgba(255,255,255,.25);
+        .contact-email:hover {
+            color: #aeb5c1;
         }
 
-        /* =========================
+        .contact-links {
+            display: flex;
+            gap: 20px;
+
+            color: #858d9d;
+
+            font-size: 0.84rem;
+        }
+
+        .contact-links a:hover {
+            color: white;
+        }
+
+
+        /* =========================================================
            FOOTER
-        ========================== */
+        ========================================================= */
 
         footer {
-            border-top: 1px solid var(--border);
             padding: 25px 0;
-            color: var(--muted);
-            font-size: 12px;
+
+            border-top:
+                1px solid rgba(255,255,255,0.06);
+
+            color: #565e6d;
+
+            font-size: 0.73rem;
         }
 
-        .footer-inner {
+        .footer-content {
             display: flex;
+
             justify-content: space-between;
-            gap: 20px;
         }
 
-        /* =========================
-           REVEAL ANIMATION
-        ========================== */
 
-        .reveal {
-            opacity: 0;
-            transform: translateY(25px);
-            transition: .7s ease;
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* =========================
+        /* =========================================================
            RESPONSIVE
-        ========================== */
+        ========================================================= */
 
-        @media (max-width: 850px) {
-
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 72px;
-                left: 0;
-                width: 100%;
-                padding: 20px;
-                background: rgba(7,9,13,.96);
-                border-bottom: 1px solid var(--border);
-                flex-direction: column;
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .menu-btn {
-                display: block;
-            }
+        @media (max-width: 950px) {
 
             .hero-grid,
-            .about-grid,
-            .lab {
+            .about-grid {
                 grid-template-columns: 1fr;
             }
 
-            .skills-grid,
-            .activity-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .hero-grid {
+                gap: 55px;
             }
 
+            .skills-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .system-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .system-step:nth-child(2) {
+                border-right: none;
+            }
+        }
+
+
+        @media (max-width: 650px) {
+
+            .section {
+                padding: 80px 0;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 3.6rem;
+            }
+
+            .skills-grid,
             .projects {
                 grid-template-columns: 1fr;
             }
 
-            .hero h1 {
-                letter-spacing: -3px;
-            }
-        }
-
-        @media (max-width: 560px) {
-
-            .container {
-                width: min(var(--max), calc(100% - 28px));
-            }
-
-            section {
-                padding: 75px 0;
-            }
-
-            .skills-grid,
-            .activity-grid,
-            .principles {
+            .system-grid {
                 grid-template-columns: 1fr;
             }
 
-            .career {
-                padding: 28px;
+            .system-step,
+            .system-step:nth-child(2) {
+                border-right: none;
             }
 
-            .footer-inner {
+            .career-box {
+                padding: 30px;
+            }
+
+            .contact-grid {
                 flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 8px;
             }
         }
+
     </style>
 </head>
 
+
 <body>
 
-<!-- =========================
+
+<!-- =============================================================
      NAVIGATION
-========================== -->
+============================================================= -->
 
-<nav id="navbar">
-    <div class="container nav-inner">
+<header>
 
-        <a href="#home" class="logo">
-            Decoder<span>.</span>
-        </a>
+    <div class="container">
 
-        <button class="menu-btn" id="menuBtn">
-            MENU
-        </button>
+        <nav>
 
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#about">About</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#journey">Journey</a></li>
-            <li><a href="#lab">Lab</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+            <a
+                href="#"
+                class="logo"
+            >
+                L<span>.</span>
+            </a>
+
+
+            <ul class="nav-links">
+
+                <li>
+                    <a href="#about">
+                        About
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#skills">
+                        Skills
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#projects">
+                        Projects
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#journey">
+                        Journey
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#contact">
+                        Contact
+                    </a>
+                </li>
+
+            </ul>
+
+        </nav>
 
     </div>
-</nav>
+
+</header>
 
 
-<!-- =========================
-     HERO
-========================== -->
 
 <main>
 
-<section class="hero" id="home">
 
-    <div class="container hero-grid">
+<!-- =============================================================
+     HERO
+============================================================= -->
 
-        <div class="reveal">
+<section class="hero">
 
-            <div class="eyebrow">
-                <span class="status-dot"></span>
-                Machine Learning Engineer
-            </div>
+    <div class="container">
 
-            <h1>
-                Building systems
-                <span>that learn.</span>
-            </h1>
-
-            <p class="hero-description">
-                I work at the intersection of machine learning, backend engineering,
-                APIs and production systems — turning ideas into software that can
-                actually run, scale and be measured.
-            </p>
-
-            <div class="hero-actions">
-
-                <a class="btn btn-primary" href="#projects">
-                    Explore Projects
-                </a>
-
-                <a class="btn btn-secondary" href="#contact">
-                    Contact Me
-                </a>
-
-            </div>
-
-        </div>
+        <div class="hero-grid">
 
 
-        <div class="terminal reveal">
+            <div>
 
-            <div class="terminal-top">
-                <span class="terminal-dot"></span>
-                <span class="terminal-dot"></span>
-                <span class="terminal-dot"></span>
-            </div>
+                <div class="availability">
 
-            <div class="terminal-body">
+                    <span class="status-dot"></span>
 
-                <div class="terminal-line">
-                    <span class="prompt">$</span>
-                    <span class="command">whoami</span>
+                    Building • Learning • Shipping
+
                 </div>
 
-                <div class="terminal-line">
-                    ml_engineer
+
+                <h1>
+
+                    Machine
+                    <span>Learning</span>
+                    Engineer.
+
+                </h1>
+
+
+                <p class="hero-description">
+
+                    I build practical AI systems with Python,
+                    machine learning, backend engineering and
+                    production-oriented software practices.
+
+                </p>
+
+
+                <div class="hero-actions">
+
+                    <a
+                        href="#projects"
+                        class="button primary"
+                    >
+                        Explore Projects
+                    </a>
+
+
+                    <a
+                        href="https://github.com/Decoder76"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="button"
+                    >
+                        GitHub ↗
+                    </a>
+
+
+                    <a
+                        href="https://www.linkedin.com/in/lokesh-kumar-j-792389195/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="button"
+                    >
+                        LinkedIn ↗
+                    </a>
+
                 </div>
 
-                <div class="terminal-line">
-                    <span class="prompt">$</span>
-                    <span class="command">focus</span>
-                </div>
+            </div>
 
-                <div class="terminal-line">
-                    <span class="terminal-value">
-                        production_ml + backend + ai
+
+
+            <!-- ENGINEER PROFILE TERMINAL -->
+
+            <div class="terminal">
+
+                <div class="terminal-header">
+
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+
+                    <span class="terminal-title">
+                        engineer_profile.json
                     </span>
+
                 </div>
 
-                <div class="terminal-line">
-                    <span class="prompt">$</span>
-                    <span class="command">stack</span>
-                </div>
 
-                <div class="terminal-line">
-                    Python / FastAPI / PyTorch / Docker
-                </div>
+                <div class="terminal-body">
 
-                <div class="terminal-line">
-                    Redis / PostgreSQL / Git / Linux
-                </div>
+                    <div class="terminal-line">
 
-                <div class="terminal-line">
-                    <span class="prompt">$</span>
-                    <span class="command">status</span>
-                </div>
+                        <span class="terminal-key">
+                            "role"
+                        </span>:
 
-                <div class="terminal-line">
-                    <span class="terminal-value">
-                        continuously_learning
-                    </span>
+                        <span class="terminal-value">
+                            "ML Engineer"
+                        </span>
+
+                    </div>
+
+
+                    <div class="terminal-line">
+
+                        <span class="terminal-key">
+                            "focus"
+                        </span>:
+
+                        <span class="terminal-value">
+                            "AI Systems"
+                        </span>
+
+                    </div>
+
+
+                    <div class="terminal-line">
+
+                        <span class="terminal-key">
+                            "language"
+                        </span>:
+
+                        <span class="terminal-value">
+                            "Python"
+                        </span>
+
+                    </div>
+
+
+                    <div class="terminal-line">
+
+                        <span class="terminal-key">
+                            "backend"
+                        </span>:
+
+                        <span class="terminal-value">
+                            "FastAPI"
+                        </span>
+
+                    </div>
+
+
+                    <div class="terminal-line">
+
+                        <span class="terminal-key">
+                            "ml"
+                        </span>:
+
+                        <span class="terminal-value">
+                            "PyTorch / sklearn"
+                        </span>
+
+                    </div>
+
+
+                    <div class="terminal-line">
+
+                        <span class="terminal-key">
+                            "mindset"
+                        </span>:
+
+                        <span class="terminal-value">
+                            "Build → Test → Improve"
+                        </span>
+
+                    </div>
+
+
+                    <div class="terminal-line">
+
+                        <span class="terminal-key">
+                            "mode"
+                        </span>:
+
+                        <span class="terminal-value">
+                            "Learning by Building"
+                        </span>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -892,79 +1228,114 @@
 </section>
 
 
-<!-- =========================
-     ABOUT
-========================== -->
 
-<section id="about">
+<!-- =============================================================
+     ABOUT
+============================================================= -->
+
+<section
+    class="section"
+    id="about"
+>
 
     <div class="container">
 
-        <div class="section-header reveal">
-            <div class="section-number">01 / ABOUT</div>
 
-            <h2 class="section-title">
-                Engineer first.<br>
-                Learner always.
-            </h2>
-
-            <p class="section-description">
-                My journey has moved from software development and web APIs
-                toward machine learning engineering and production AI systems.
-            </p>
+        <div class="section-label">
+            01 / About
         </div>
+
+
+        <h2 class="section-title">
+
+            I learn technology by
+            turning ideas into systems.
+
+        </h2>
 
 
         <div class="about-grid">
 
-            <div class="card reveal">
 
-                <h3>Who I am</h3>
+            <div class="about-main">
 
-                <p>
-                    I am a Machine Learning Engineer with a background in
-                    Information Technology and software development. My work
-                    combines Python, backend APIs, machine learning and
-                    infrastructure.
-                </p>
+                I'm <strong>Lokesh</strong>,
+                a Machine Learning Engineer focused on
+                building practical AI systems and
+                production-oriented software.
 
-                <br>
 
-                <p>
-                    Rather than treating ML as only model training, I am
-                    interested in the complete system: data, inference,
-                    APIs, caching, workers, deployment, testing,
-                    monitoring and performance.
-                </p>
+                <br><br>
+
+
+                My journey started with Python, data processing
+                and machine learning, and has gradually expanded
+                toward <strong>AI applications, backend engineering,
+                ML inference and system design.</strong>
+
+
+                <br><br>
+
+
+                I enjoy going beyond training a model and
+                understanding how the complete system works —
+                from data and model development to APIs,
+                inference, testing, deployment and user experience.
 
             </div>
 
 
-            <div class="card reveal">
 
-                <h3>How I work</h3>
+            <div class="about-side">
 
-                <div class="principles">
 
-                    <div class="principle">
-                        <strong>Build</strong>
-                        <span>Turn concepts into working systems.</span>
-                    </div>
+                <div class="info-card">
 
-                    <div class="principle">
-                        <strong>Measure</strong>
-                        <span>Use metrics instead of assumptions.</span>
-                    </div>
+                    <h3>
+                        Engineering Approach
+                    </h3>
 
-                    <div class="principle">
-                        <strong>Debug</strong>
-                        <span>Understand failures at system level.</span>
-                    </div>
+                    <p>
 
-                    <div class="principle">
-                        <strong>Document</strong>
-                        <span>Make systems reproducible.</span>
-                    </div>
+                        Modular Python, clean project structure,
+                        testing, Git workflows, documentation
+                        and production-oriented architecture.
+
+                    </p>
+
+                </div>
+
+
+                <div class="info-card">
+
+                    <h3>
+                        Current Direction
+                    </h3>
+
+                    <p>
+
+                        Moving from individual ML models toward
+                        complete AI systems and scalable
+                        inference services.
+
+                    </p>
+
+                </div>
+
+
+                <div class="info-card">
+
+                    <h3>
+                        Learning Philosophy
+                    </h3>
+
+                    <p>
+
+                        Build something real, understand why it
+                        works, identify failure points and improve
+                        the architecture.
+
+                    </p>
 
                 </div>
 
@@ -977,111 +1348,124 @@
 </section>
 
 
-<!-- =========================
-     SKILLS
-========================== -->
 
-<section id="skills">
+<!-- =============================================================
+     SKILLS
+============================================================= -->
+
+<section
+    class="section"
+    id="skills"
+>
 
     <div class="container">
 
-        <div class="section-header reveal">
-            <div class="section-number">02 / TOOLBOX</div>
 
-            <h2 class="section-title">
-                Technical stack.
-            </h2>
-
-            <p class="section-description">
-                A practical stack built around Python, ML engineering,
-                backend systems and developer tooling.
-            </p>
+        <div class="section-label">
+            02 / Skills
         </div>
+
+
+        <h2 class="section-title">
+
+            A growing engineering stack.
+
+        </h2>
+
+
+        <p class="section-description">
+
+            My stack is centered around Python and expands
+            from machine learning into APIs, AI applications,
+            systems and deployment.
+
+        </p>
 
 
         <div class="skills-grid">
 
-            <div class="skill-card reveal">
-                <h3>Machine Learning</h3>
 
-                <div class="tags">
-                    <span class="tag">PyTorch</span>
-                    <span class="tag">TensorFlow</span>
-                    <span class="tag">Scikit-learn</span>
-                    <span class="tag">NLP</span>
-                    <span class="tag">RNN</span>
-                    <span class="tag">Model Evaluation</span>
-                </div>
+            <div class="skill-card">
+
+                <span class="skill-number">
+                    01
+                </span>
+
+                <h3>
+                    Machine Learning
+                </h3>
+
+                <p>
+
+                    scikit-learn, TensorFlow, PyTorch,
+                    feature engineering, model evaluation,
+                    hyperparameter optimization and inference.
+
+                </p>
+
             </div>
 
 
-            <div class="skill-card reveal">
-                <h3>Backend</h3>
+            <div class="skill-card">
 
-                <div class="tags">
-                    <span class="tag">Python</span>
-                    <span class="tag">FastAPI</span>
-                    <span class="tag">Flask</span>
-                    <span class="tag">REST APIs</span>
-                    <span class="tag">AsyncIO</span>
-                    <span class="tag">Rails</span>
-                </div>
+                <span class="skill-number">
+                    02
+                </span>
+
+                <h3>
+                    AI / LLM
+                </h3>
+
+                <p>
+
+                    NLP, semantic retrieval, embeddings,
+                    RAG-style pipelines, prompt engineering
+                    and local AI experimentation.
+
+                </p>
+
             </div>
 
 
-            <div class="skill-card reveal">
-                <h3>Data</h3>
+            <div class="skill-card">
 
-                <div class="tags">
-                    <span class="tag">PostgreSQL</span>
-                    <span class="tag">MySQL</span>
-                    <span class="tag">MongoDB</span>
-                    <span class="tag">Pandas</span>
-                    <span class="tag">NumPy</span>
-                    <span class="tag">SQL</span>
-                </div>
+                <span class="skill-number">
+                    03
+                </span>
+
+                <h3>
+                    Backend
+                </h3>
+
+                <p>
+
+                    Python, FastAPI, REST APIs, asynchronous
+                    services, Redis, workers and ML inference
+                    architecture.
+
+                </p>
+
             </div>
 
 
-            <div class="skill-card reveal">
-                <h3>Infrastructure</h3>
+            <div class="skill-card">
 
-                <div class="tags">
-                    <span class="tag">Docker</span>
-                    <span class="tag">Redis</span>
-                    <span class="tag">Linux</span>
-                    <span class="tag">AWS</span>
-                    <span class="tag">CI/CD</span>
-                    <span class="tag">Load Testing</span>
-                </div>
-            </div>
+                <span class="skill-number">
+                    04
+                </span>
 
+                <h3>
+                    Engineering
+                </h3>
 
-            <div class="skill-card reveal">
-                <h3>Development</h3>
+                <p>
 
-                <div class="tags">
-                    <span class="tag">Git</span>
-                    <span class="tag">GitHub</span>
-                    <span class="tag">Bash</span>
-                    <span class="tag">Testing</span>
-                    <span class="tag">pytest</span>
-                    <span class="tag">Debugging</span>
-                </div>
-            </div>
+                    Git, testing, modular architecture,
+                    Linux, Bash, Docker, CI/CD concepts
+                    and deployment workflows.
 
+                </p>
 
-            <div class="skill-card reveal">
-                <h3>Web</h3>
-
-                <div class="tags">
-                    <span class="tag">HTML</span>
-                    <span class="tag">CSS</span>
-                    <span class="tag">JavaScript</span>
-                    <span class="tag">Leaflet</span>
-                    <span class="tag">Jekyll</span>
-                    <span class="tag">GitHub Pages</span>
-                </div>
             </div>
 
         </div>
@@ -1091,211 +1475,353 @@
 </section>
 
 
-<!-- =========================
-     PROJECTS
-========================== -->
 
-<section id="projects">
+<!-- =============================================================
+     PROJECTS
+============================================================= -->
+
+<section
+    class="section"
+    id="projects"
+>
 
     <div class="container">
 
-        <div class="section-header reveal">
-            <div class="section-number">03 / PROJECTS</div>
 
-            <h2 class="section-title">
-                Things I build.
-            </h2>
-
-            <p class="section-description">
-                Projects are where I turn learning into engineering experience.
-            </p>
+        <div class="section-label">
+            03 / Projects
         </div>
+
+
+        <h2 class="section-title">
+
+            Building systems, not just demos.
+
+        </h2>
+
+
+        <p class="section-description">
+
+            Selected projects representing my transition from
+            learning individual technologies toward complete
+            AI and software systems.
+
+        </p>
 
 
         <div class="projects">
 
 
-            <article class="project reveal">
+            <!-- NETTRACE -->
 
-                <div>
+            <article class="project">
 
-                    <div class="project-number">01</div>
+                <div class="project-top">
 
-                    <h3>Production ML Inference API</h3>
+                    <span>
+                        PROJECT / 01
+                    </span>
 
-                    <p>
-                        A production-oriented ML serving architecture using
-                        FastAPI, PyTorch, Redis, workers and Docker.
-                        The system focuses on inference lifecycle,
-                        caching, concurrency and performance measurement.
-                    </p>
+                    <span>
+                        NETWORKING
+                    </span>
 
                 </div>
 
-                <div class="project-footer">
 
-                    <span class="project-stack">
-                        FastAPI · PyTorch · Redis · Docker
-                    </span>
+                <h3>
+                    NetTrace
+                </h3>
 
-                    <a href="#" class="project-link">
-                        View Project →
-                    </a>
+
+                <p>
+
+                    A real traceroute visualization system combining
+                    network path discovery, IP geolocation, FastAPI
+                    and an interactive map.
+
+                </p>
+
+
+                <a
+                    href="#"
+                    class="project-link"
+                >
+                    Project repository →
+                </a>
+
+
+                <div class="project-stack">
+
+                    <span class="tag">Python</span>
+                    <span class="tag">FastAPI</span>
+                    <span class="tag">Traceroute</span>
+                    <span class="tag">Leaflet</span>
+                    <span class="tag">Geolocation</span>
 
                 </div>
 
             </article>
 
 
-            <article class="project reveal">
 
-                <div>
+            <!-- ML INFERENCE -->
 
-                    <div class="project-number">02</div>
+            <article class="project">
 
-                    <h3>GitaLens</h3>
+                <div class="project-top">
 
-                    <p>
-                        A local AI system designed around semantic retrieval,
-                        query analysis, verse retrieval, reranking,
-                        metaphysical analysis and structured response generation.
-                    </p>
+                    <span>
+                        PROJECT / 02
+                    </span>
+
+                    <span>
+                        ML SYSTEMS
+                    </span>
 
                 </div>
 
-                <div class="project-footer">
 
-                    <span class="project-stack">
-                        Python · FastAPI · NLP · Retrieval
-                    </span>
+                <h3>
+                    Production ML Inference API
+                </h3>
 
-                    <a href="#" class="project-link">
-                        View Project →
-                    </a>
+
+                <p>
+
+                    A production-oriented architecture exploring
+                    asynchronous API gateways, Redis, worker-based
+                    inference and scalable model serving.
+
+                </p>
+
+
+                <a
+                    href="#"
+                    class="project-link"
+                >
+                    Project repository →
+                </a>
+
+
+                <div class="project-stack">
+
+                    <span class="tag">FastAPI</span>
+                    <span class="tag">Redis</span>
+                    <span class="tag">PyTorch</span>
+                    <span class="tag">Async</span>
+                    <span class="tag">Inference</span>
 
                 </div>
 
             </article>
 
 
-            <article class="project reveal">
 
-                <div>
+            <!-- GITALENS -->
 
-                    <div class="project-number">03</div>
+            <article class="project">
 
-                    <h3>NetTrace</h3>
+                <div class="project-top">
 
-                    <p>
-                        A network visualization project combining real
-                        traceroute data, IP geolocation and an interactive
-                        world map to visualize network hops.
-                    </p>
+                    <span>
+                        PROJECT / 03
+                    </span>
+
+                    <span>
+                        AI / NLP
+                    </span>
 
                 </div>
 
-                <div class="project-footer">
 
-                    <span class="project-stack">
-                        FastAPI · Traceroute · Leaflet · JavaScript
-                    </span>
+                <h3>
+                    GitaLens
+                </h3>
 
-                    <a href="#" class="project-link">
-                        View Project →
-                    </a>
+
+                <p>
+
+                    A local AI system designed around query analysis,
+                    semantic retrieval, relevant verse selection,
+                    reranking, contextual analysis and response
+                    generation.
+
+                </p>
+
+
+                <a
+                    href="#"
+                    class="project-link"
+                >
+                    Project repository →
+                </a>
+
+
+                <div class="project-stack">
+
+                    <span class="tag">Python</span>
+                    <span class="tag">FastAPI</span>
+                    <span class="tag">Semantic Search</span>
+                    <span class="tag">LLM</span>
+                    <span class="tag">RAG</span>
 
                 </div>
 
             </article>
 
 
-            <article class="project reveal">
 
-                <div>
+            <!-- LMS -->
 
-                    <div class="project-number">04</div>
+            <article class="project">
 
-                    <h3>AI LMS</h3>
+                <div class="project-top">
 
-                    <p>
-                        An AI-powered learning management system concept
-                        combining backend APIs, ML pipelines, student
-                        profiling and structured software development practices.
-                    </p>
+                    <span>
+                        PROJECT / 04
+                    </span>
+
+                    <span>
+                        EDUCATION / AI
+                    </span>
 
                 </div>
 
-                <div class="project-footer">
 
-                    <span class="project-stack">
-                        Python · FastAPI · ML · PostgreSQL
-                    </span>
+                <h3>
+                    Shiksha — LMS AI
+                </h3>
 
-                    <a href="#" class="project-link">
-                        View Project →
-                    </a>
+
+                <p>
+
+                    An AI-oriented learning management system
+                    combining backend development, data processing,
+                    ML pipelines and structured software engineering.
+
+                </p>
+
+
+                <a
+                    href="#"
+                    class="project-link"
+                >
+                    Project repository →
+                </a>
+
+
+                <div class="project-stack">
+
+                    <span class="tag">Python</span>
+                    <span class="tag">FastAPI</span>
+                    <span class="tag">ML</span>
+                    <span class="tag">Data Processing</span>
+                    <span class="tag">Git</span>
 
                 </div>
 
             </article>
 
 
-            <article class="project reveal">
 
-                <div>
+            <!-- QUIZ -->
 
-                    <div class="project-number">05</div>
+            <article class="project">
 
-                    <h3>NLP / RNN Experiments</h3>
+                <div class="project-top">
 
-                    <p>
-                        Practical NLP experimentation covering preprocessing,
-                        tokenization, padding, text classification and
-                        next-word prediction using recurrent neural networks.
-                    </p>
+                    <span>
+                        PROJECT / 05
+                    </span>
+
+                    <span>
+                        GENERATIVE AI
+                    </span>
 
                 </div>
 
-                <div class="project-footer">
 
-                    <span class="project-stack">
-                        Python · TensorFlow · NLP
-                    </span>
+                <h3>
+                    LLM Quiz Generator
+                </h3>
 
-                    <a href="#" class="project-link">
-                        View Project →
-                    </a>
+
+                <p>
+
+                    An LLM-powered application for generating
+                    structured quizzes from learning material.
+
+                </p>
+
+
+                <a
+                    href="#"
+                    class="project-link"
+                >
+                    Project repository →
+                </a>
+
+
+                <div class="project-stack">
+
+                    <span class="tag">Python</span>
+                    <span class="tag">Streamlit</span>
+                    <span class="tag">LLM</span>
+                    <span class="tag">NLP</span>
+                    <span class="tag">Hugging Face</span>
 
                 </div>
 
             </article>
 
 
-            <article class="project reveal">
 
-                <div>
+            <!-- DEV UTILITIES -->
 
-                    <div class="project-number">06</div>
+            <article class="project">
 
-                    <h3>Backend / Rails Systems</h3>
+                <div class="project-top">
 
-                    <p>
-                        Web application work involving CRUD operations,
-                        authentication, PostgreSQL, REST APIs,
-                        testing and security-oriented development.
-                    </p>
+                    <span>
+                        PROJECT / 06
+                    </span>
+
+                    <span>
+                        AUTOMATION
+                    </span>
 
                 </div>
 
-                <div class="project-footer">
 
-                    <span class="project-stack">
-                        Ruby · Rails · PostgreSQL · REST
-                    </span>
+                <h3>
+                    Developer Utilities
+                </h3>
 
-                    <a href="#" class="project-link">
-                        View Project →
-                    </a>
+
+                <p>
+
+                    Engineering utilities for automating repetitive
+                    development and media-processing workflows using
+                    reusable command-line tools.
+
+                </p>
+
+
+                <a
+                    href="#"
+                    class="project-link"
+                >
+                    Project repository →
+                </a>
+
+
+                <div class="project-stack">
+
+                    <span class="tag">Python</span>
+                    <span class="tag">Bash</span>
+                    <span class="tag">Linux</span>
+                    <span class="tag">Automation</span>
 
                 </div>
 
@@ -1308,174 +1834,254 @@
 </section>
 
 
-<!-- =========================
-     JOURNEY
-========================== -->
 
-<section id="journey">
+<!-- =============================================================
+     FUTURE MEDIA / PROJECT SHOWCASE
+
+     CURRENTLY DISABLED
+
+     Future implementation ideas:
+
+     1. Personal profile image
+     2. Project screenshots
+     3. Architecture diagrams
+     4. GitHub repository cards
+     5. Project demo videos
+     6. YouTube demonstrations
+     7. Interactive project previews
+
+     Uncomment this section when assets are ready.
+============================================================= -->
+
+<!--
+
+<section class="section" id="media">
 
     <div class="container">
 
-        <div class="section-header reveal">
-            <div class="section-number">04 / JOURNEY</div>
-
-            <h2 class="section-title">
-                From software<br>
-                to ML systems.
-            </h2>
+        <div class="section-label">
+            04 / Media
         </div>
+
+        <h2 class="section-title">
+            See the systems in action.
+        </h2>
+
+        <p class="section-description">
+            Screenshots, architecture diagrams, repositories
+            and project demonstrations.
+        </p>
+
+
+        <div class="media-grid">
+
+
+            <article class="media-card">
+
+                <h3>
+                    Profile
+                </h3>
+
+                <br>
+
+                <img
+                    src="assets/profile.jpg"
+                    alt="Lokesh Kumar"
+                >
+
+            </article>
+
+
+            <article class="media-card">
+
+                <h3>
+                    Project Demo
+                </h3>
+
+                <br>
+
+                <video
+                    controls
+                    poster="assets/project-poster.jpg"
+                >
+
+                    <source
+                        src="assets/project-demo.mp4"
+                        type="video/mp4"
+                    >
+
+                    Your browser does not support video.
+
+                </video>
+
+            </article>
+
+
+            <article class="media-card github-card">
+
+                <h3>
+                    GitHub
+                </h3>
+
+                <br>
+
+                <p>
+                    View source code, repositories and
+                    ongoing engineering work.
+                </p>
+
+                <br>
+
+                <a
+                    href="https://github.com/Decoder76"
+                    target="_blank"
+                >
+                    github.com/Decoder76 →
+                </a>
+
+            </article>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+-->
+
+
+
+<!-- =============================================================
+     LEARNING JOURNEY
+============================================================= -->
+
+<section
+    class="section"
+    id="journey"
+>
+
+    <div class="container">
+
+
+        <div class="section-label">
+            05 / Journey
+        </div>
+
+
+        <h2 class="section-title">
+
+            From Python to production-oriented
+            AI systems.
+
+        </h2>
 
 
         <div class="timeline">
 
-            <div class="timeline-item reveal">
 
-                <div class="timeline-dot"></div>
+            <div class="timeline-item">
 
-                <div class="timeline-year">2019 — 2023</div>
-
-                <h3>B.Tech — Information Technology</h3>
-
-                <p>
-                    Built the academic foundation across programming,
-                    software engineering, databases, web technologies
-                    and computer science.
-                </p>
-
-            </div>
-
-
-            <div class="timeline-item reveal">
-
-                <div class="timeline-dot"></div>
-
-                <div class="timeline-year">2023 — 2024</div>
-
-                <h3>Software Development</h3>
-
-                <p>
-                    Worked with backend technologies, APIs, databases,
-                    application development and software engineering workflows.
-                </p>
-
-            </div>
-
-
-            <div class="timeline-item reveal">
-
-                <div class="timeline-dot"></div>
-
-                <div class="timeline-year">2024 — Present</div>
-
-                <h3>Machine Learning Engineering</h3>
-
-                <p>
-                    Shifted deeper into machine learning, Python,
-                    model development, data processing and ML integration
-                    with backend systems.
-                </p>
-
-            </div>
-
-
-            <div class="timeline-item reveal">
-
-                <div class="timeline-dot"></div>
-
-                <div class="timeline-year">Current</div>
-
-                <h3>Production AI Engineering</h3>
-
-                <p>
-                    Focusing on the engineering layer around ML:
-                    inference APIs, Redis caching, workers,
-                    Docker, observability, performance and deployment.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =========================
-     LEARNING LAB
-========================== -->
-
-<section id="lab">
-
-    <div class="container">
-
-        <div class="section-header reveal">
-
-            <div class="section-number">05 / CURRENT LAB</div>
-
-            <h2 class="section-title">
-                Learning by building.
-            </h2>
-
-            <p class="section-description">
-                The current learning strategy is practical:
-                build the architecture, test it, measure it,
-                break it and improve it.
-            </p>
-
-        </div>
-
-
-        <div class="lab">
-
-            <div class="lab-card reveal">
-
-                <h3>Production ML Serving</h3>
-
-                <p>
-                    Working through a complete inference architecture:
-                    API gateway → model worker → Redis → caching →
-                    Docker → monitoring → load testing → optimization.
-                </p>
-
-                <div class="metric">
-
-                    <div>
-                        <strong>48ms</strong>
-                        <span>Target p95 latency</span>
-                    </div>
-
-                    <div>
-                        <strong>1.1K</strong>
-                        <span>Target RPM</span>
-                    </div>
-
+                <div class="timeline-year">
+                    PHASE 01
                 </div>
 
+                <h3>
+                    Python & Programming
+                </h3>
+
+                <p>
+
+                    Building foundations in Python,
+                    scripting, Linux and practical
+                    problem-solving.
+
+                </p>
+
             </div>
 
 
-            <div class="lab-card reveal">
+            <div class="timeline-item">
 
-                <h3>Engineering Method</h3>
-
-                <p>
-                    Instead of learning technologies independently,
-                    I connect them into complete systems and use projects
-                    as the learning environment.
-                </p>
-
-                <div class="tags" style="margin-top:25px">
-
-                    <span class="tag">Build</span>
-                    <span class="tag">Test</span>
-                    <span class="tag">Measure</span>
-                    <span class="tag">Debug</span>
-                    <span class="tag">Optimize</span>
-                    <span class="tag">Document</span>
-
+                <div class="timeline-year">
+                    PHASE 02
                 </div>
 
+                <h3>
+                    Data & Machine Learning
+                </h3>
+
+                <p>
+
+                    Moving into NumPy, pandas, data cleaning,
+                    feature engineering, model training,
+                    evaluation and experimentation.
+
+                </p>
+
+            </div>
+
+
+            <div class="timeline-item">
+
+                <div class="timeline-year">
+                    PHASE 03
+                </div>
+
+                <h3>
+                    AI Applications
+                </h3>
+
+                <p>
+
+                    Exploring NLP, LLMs, semantic retrieval,
+                    embeddings and practical AI applications.
+
+                </p>
+
+            </div>
+
+
+            <div class="timeline-item">
+
+                <div class="timeline-year">
+                    PHASE 04
+                </div>
+
+                <h3>
+                    Backend & APIs
+                </h3>
+
+                <p>
+
+                    Learning to expose models through FastAPI,
+                    design services and connect AI components
+                    to real applications.
+
+                </p>
+
+            </div>
+
+
+            <div class="timeline-item">
+
+                <div class="timeline-year">
+                    CURRENT
+                </div>
+
+                <h3>
+                    Production ML Systems
+                </h3>
+
+                <p>
+
+                    Focusing on inference architecture,
+                    asynchronous processing, caching,
+                    workers, testing, deployment and
+                    system reliability.
+
+                </p>
+
             </div>
 
         </div>
@@ -1485,60 +2091,111 @@
 </section>
 
 
-<!-- =========================
-     ACTIVITY
-========================== -->
 
-<section>
+<!-- =============================================================
+     ENGINEERING SYSTEM
+============================================================= -->
+
+<section class="section">
 
     <div class="container">
 
-        <div class="section-header reveal">
 
-            <div class="section-number">06 / BEYOND PROJECTS</div>
-
-            <h2 class="section-title">
-                Always experimenting.
-            </h2>
-
+        <div class="section-label">
+            06 / Work System
         </div>
 
 
-        <div class="activity-grid">
+        <h2 class="section-title">
 
-            <div class="activity reveal">
-                <div class="activity-icon">⌘</div>
+            How I turn learning into engineering.
 
-                <h3>Build</h3>
+        </h2>
+
+
+        <p class="section-description">
+
+            Each learning cycle should produce something
+            executable, testable and understandable.
+
+        </p>
+
+
+        <div class="system-grid">
+
+
+            <div class="system-step">
+
+                <span>01</span>
+
+                <h3>
+                    Learn
+                </h3>
 
                 <p>
-                    Small tools, experiments and complete applications
-                    are used to turn concepts into practical experience.
+                    Understand the technology and its purpose.
                 </p>
+
             </div>
 
 
-            <div class="activity reveal">
-                <div class="activity-icon">◉</div>
+            <div class="system-step">
 
-                <h3>Explore</h3>
+                <span>02</span>
+
+                <h3>
+                    Build
+                </h3>
 
                 <p>
-                    Exploring Linux, local AI, developer tooling,
-                    APIs, infrastructure and new engineering workflows.
+                    Convert the concept into a working project.
                 </p>
+
             </div>
 
 
-            <div class="activity reveal">
-                <div class="activity-icon">↗</div>
+            <div class="system-step">
 
-                <h3>Improve</h3>
+                <span>03</span>
+
+                <h3>
+                    Test
+                </h3>
 
                 <p>
-                    Revisiting projects to improve architecture,
-                    reproducibility, performance and user experience.
+                    Find failure points and validate behaviour.
                 </p>
+
+            </div>
+
+
+            <div class="system-step">
+
+                <span>04</span>
+
+                <h3>
+                    Document
+                </h3>
+
+                <p>
+                    Explain architecture, decisions and usage.
+                </p>
+
+            </div>
+
+
+            <div class="system-step">
+
+                <span>05</span>
+
+                <h3>
+                    Ship
+                </h3>
+
+                <p>
+                    Put the system into a usable environment.
+                </p>
+
             </div>
 
         </div>
@@ -1548,25 +2205,39 @@
 </section>
 
 
-<!-- =========================
-     CAREER
-========================== -->
 
-<section>
+<!-- =============================================================
+     CAREER DIRECTION
+============================================================= -->
+
+<section class="section">
 
     <div class="container">
 
-        <div class="career reveal">
 
-            <h2>
-                The goal is not just to train models.
-                It is to build systems around them.
-            </h2>
+        <div class="section-label">
+            07 / Direction
+        </div>
+
+
+        <div class="career-box">
+
+            <h3>
+
+                Building toward
+                production-grade
+                AI engineering.
+
+            </h3>
+
 
             <p>
-                My career direction is toward engineering roles where
-                machine learning, backend development and production
-                infrastructure meet.
+
+                My long-term direction is to combine
+                machine learning knowledge with strong
+                software engineering — building reliable
+                AI services rather than only training models.
+
             </p>
 
         </div>
@@ -1576,45 +2247,76 @@
 </section>
 
 
-<!-- =========================
+
+<!-- =============================================================
      CONTACT
-========================== -->
+============================================================= -->
 
-<section id="contact">
+<section
+    class="section contact"
+    id="contact"
+>
 
     <div class="container">
 
-        <div class="contact reveal">
 
-            <div class="section-number">07 / CONTACT</div>
+        <div class="section-label">
+            08 / Contact
+        </div>
 
-            <h2>
-                Let's build something useful.
-            </h2>
 
-            <p>
-                Open to discussing machine learning engineering,
-                backend systems, AI applications and technical projects.
-            </p>
+        <h2 class="section-title">
 
-            <div class="socials">
+            Build something useful.
 
-                <a class="social"
-                   href="https://github.com/Decoder76"
-                   target="_blank">
+        </h2>
+
+
+        <div class="contact-grid">
+
+
+            <!-- Replace with actual email -->
+
+            <a
+                class="contact-email"
+                href="mailto:lavkeshkj79@gmail.com"
+            >
+                Let's connect ↗
+            </a>
+
+
+            <div class="contact-links">
+
+
+                <a
+                    href="https://github.com/Decoder76"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
                     GitHub
                 </a>
 
-                <a class="social"
-                   href="#"
-                   target="_blank">
+
+                <a
+                    href="https://www.linkedin.com/in/lokesh-kumar-j-792389195/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
                     LinkedIn
                 </a>
 
-                <a class="social"
-                   href="mailto:your-email@example.com">
-                    Email
+
+                <!--
+                FUTURE:
+
+                <a
+                    href="assets/Lokesh-Kumar-Resume.pdf"
+                    target="_blank"
+                >
+                    Resume
                 </a>
+                -->
+
 
             </div>
 
@@ -1623,108 +2325,37 @@
     </div>
 
 </section>
+
 
 </main>
 
 
-<!-- =========================
+
+<!-- =============================================================
      FOOTER
-========================== -->
+============================================================= -->
 
 <footer>
 
-    <div class="container footer-inner">
+    <div class="container">
 
-        <span>
-            © 2026 Decoder
-        </span>
+        <div class="footer-content">
 
-        <span>
-            Built with HTML · CSS · JavaScript
-        </span>
+            <span>
+                © 2026 Lokesh Kumar
+            </span>
+
+            <span>
+                Built with HTML + CSS
+            </span>
+
+        </div>
 
     </div>
 
 </footer>
 
 
-<script>
-
-    /* =========================
-       MOBILE MENU
-    ========================== */
-
-    const menuBtn = document.getElementById("menuBtn");
-    const navLinks = document.getElementById("navLinks");
-
-    menuBtn.addEventListener("click", () => {
-        navLinks.classList.toggle("active");
-    });
-
-    document.querySelectorAll(".nav-links a").forEach(link => {
-        link.addEventListener("click", () => {
-            navLinks.classList.remove("active");
-        });
-    });
-
-
-    /* =========================
-       NAVBAR SCROLL
-    ========================== */
-
-    const navbar = document.getElementById("navbar");
-
-    window.addEventListener("scroll", () => {
-
-        if (window.scrollY > 20) {
-            navbar.classList.add("scrolled");
-        } else {
-            navbar.classList.remove("scrolled");
-        }
-
-    });
-
-
-    /* =========================
-       SCROLL REVEAL
-    ========================== */
-
-    const observer = new IntersectionObserver(
-        entries => {
-
-            entries.forEach(entry => {
-
-                if (entry.isIntersecting) {
-                    entry.target.classList.add("visible");
-                    observer.unobserve(entry.target);
-                }
-
-            });
-
-        },
-        {
-            threshold: 0.12
-        }
-    );
-
-
-    document.querySelectorAll(".reveal").forEach(element => {
-        observer.observe(element);
-    });
-
-
-    /* =========================
-       CURRENT YEAR
-    ========================== */
-
-    const yearElement = document.querySelector("footer span");
-
-    if (yearElement) {
-        yearElement.textContent =
-            `© ${new Date().getFullYear()} Decoder`;
-    }
-
-</script>
-
 </body>
+
 </html>
