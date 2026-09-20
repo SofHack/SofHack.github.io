@@ -1,1828 +1,1730 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080b10">
-  <title>World Utility Console</title>
-
-  <style>
-    :root {
-      --bg: #080b10;
-      --panel: #0e131a;
-      --panel-2: #111821;
-      --line: #25303c;
-      --line-soft: #1a232d;
-      --text: #edf2f7;
-      --muted: #7f8b98;
-      --accent: #5fd3ff;
-      --accent-soft: rgba(95, 211, 255, 0.12);
-      --green: #79d99b;
-      --danger: #ff7676;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      overflow: hidden;
-    }
-
-    body {
-      background:
-        radial-gradient(
-          circle at 50% 0%,
-          #131c26 0%,
-          transparent 48%
-        ),
-        var(--bg);
-
-      color: var(--text);
-
-      font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-    }
-
-    /* =========================================================
-       DASHBOARD
-       ========================================================= */
-
-    .dashboard {
-    	width: 100vw;
-    	height: 100vh;
-    	padding: 16px;
-    	box-sizing: border-box;
-
-    	display: grid;
-    	grid-template-columns: repeat(2, 1fr);
-    	grid-template-rows: repeat(2, 1fr);
-    	gap: 12px;
-
-    	perspective: 1600px;
-     }
-
-    /* =========================================================
-       PANEL
-       ========================================================= */
-
-    .panel {
-    position: relative;
-    min-width: 0;
-    min-height: 0;
-
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
-
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-
-    overflow: hidden;
-
-    transition:
-        transform 0.65s cubic-bezier(.2,.8,.2,1),
-        opacity 0.45s ease,
-        filter 0.45s ease,
-        box-shadow 0.45s ease;
-
-    transform-style: preserve-3d;
-    will-change: transform;
-	}
-
-    /* Subtle panel scan/grid texture */
-
-    .panel::after {
-      content: "";
-
-      position: absolute;
-      inset: 0;
-
-      pointer-events: none;
-
-      background:
-        linear-gradient(
-          rgba(255, 255, 255, 0.018) 1px,
-          transparent 1px
-        );
-
-      background-size: 100% 36px;
-
-      opacity: 0.18;
-
-      mask-image:
-        linear-gradient(
-          to bottom,
-          black,
-          transparent
-        );
-    }
-
-    /* =========================================================
-       3D INTERACTION
-       ========================================================= */
-
-    .panel:hover:not(.active) {
-      transform:
-        translate3d(0, 0, 14px)
-        scale(1.008);
-
-      border-color: #31404d;
-    }
-
-    .panel.active {
-      z-index: 50;
-
-      transform:
-        translate3d(0, 0, 100px)
-        scale(1.045);
-
-      border-color:
-        rgba(95, 211, 255, 0.68);
-
-      box-shadow:
-        0 42px 85px rgba(0, 0, 0, 0.68),
-        0 0 35px rgba(95, 211, 255, 0.11),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
-
-      filter: brightness(1.08);
-    }
-
-    .dashboard.has-active .panel:not(.active) {
-      transform:
-        translate3d(0, 0, -38px)
-        scale(0.975);
-
-      opacity: 0.58;
-      filter: brightness(0.72);
-    }
-
-    .panel.active::before {
-      content: "";
-
-      position: absolute;
-      inset: -1px;
-
-      border-radius: inherit;
-
-      pointer-events: none;
-
-      box-shadow:
-        0 0 0 1px rgba(95, 211, 255, 0.08),
-        0 0 40px rgba(95, 211, 255, 0.08);
-
-      z-index: 30;
-    }
-
-    /* =========================================================
-       PANEL HEADER
-       ========================================================= */
-
-    .panel-header {
-      position: relative;
-      z-index: 5;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      margin-bottom: 18px;
-    }
-
-    .label {
-      font-size: 10px;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-
-      font-size: 10px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-
-      color: var(--muted);
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-
-      border-radius: 50%;
-
-      background: var(--green);
-
-      box-shadow:
-        0 0 8px rgba(121, 217, 155, 0.7);
-    }
-
-    /* =========================================================
-       CORNER MARKERS
-       ========================================================= */
-
-    .corner {
-      position: absolute;
-
-      width: 8px;
-      height: 8px;
-
-      border-color: var(--accent);
-
-      opacity: 0.7;
-
-      z-index: 10;
-
-      pointer-events: none;
-    }
-
-    .corner.tl {
-      top: -1px;
-      left: -1px;
-
-      border-top: 1px solid;
-      border-left: 1px solid;
-    }
-
-    .corner.br {
-      right: -1px;
-      bottom: -1px;
-
-      border-right: 1px solid;
-      border-bottom: 1px solid;
-    }
-
-    /* =========================================================
-       CLOCK
-       ========================================================= */
-
-    .clock-panel {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .clock-content {
-      position: relative;
-      z-index: 5;
-
-      flex: 1;
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-
-      text-align: center;
-    }
-
-    .clock {
-      font-size: clamp(56px, 8vw, 106px);
-
-      font-weight: 300;
-
-      line-height: 1;
-
-      letter-spacing: -4px;
-
-      font-variant-numeric: tabular-nums;
-
-      text-shadow:
-        0 0 20px rgba(95, 211, 255, 0.04);
-    }
-
-    .clock-unit {
-      margin-top: 12px;
-
-      font-size: 10px;
-      letter-spacing: 3px;
-
-      text-transform: uppercase;
-
-      color: var(--accent);
-    }
-
-    .date {
-      margin-top: 14px;
-
-      font-size: 13px;
-
-      color: var(--muted);
-    }
-
-    .location {
-      margin-top: 7px;
-
-      font-size: 11px;
-
-      color: #aab4bf;
-    }
-
-    .clock-meta {
-      position: absolute;
-
-      left: 18px;
-      bottom: 16px;
-
-      display: flex;
-      gap: 16px;
-
-      font-size: 9px;
-
-      letter-spacing: 1px;
-
-      text-transform: uppercase;
-
-      color: #56616d;
-
-      z-index: 5;
-    }
-
-    /* =========================================================
-       WORLD MAP
-       ========================================================= */
-
-    .map-panel {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .map-wrap {
-      position: relative;
-      z-index: 5;
-
-      flex: 1;
-      min-height: 0;
-
-      border: 1px solid var(--line-soft);
-
-      border-radius: 10px;
-
-      overflow: hidden;
-
-      background:
-        linear-gradient(
-          rgba(95, 211, 255, 0.025) 1px,
-          transparent 1px
-        ),
-        linear-gradient(
-          90deg,
-          rgba(95, 211, 255, 0.025) 1px,
-          transparent 1px
-        ),
-        #0b1016;
-
-      background-size: 32px 32px;
-    }
-
-    .map-wrap::before {
-      content: "";
-
-      position: absolute;
-      inset: 0;
-
-      background:
-        radial-gradient(
-          circle at 65% 48%,
-          rgba(95, 211, 255, 0.09),
-          transparent 28%
-        );
-
-      pointer-events: none;
-    }
-
-    .world-map {
-      width: 100%;
-      height: 100%;
-
-      padding: 18px;
-    }
-
-    .world-map svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    .graticule {
-      stroke: rgba(127, 139, 152, 0.12);
-      stroke-width: 0.6;
-
-      fill: none;
-    }
-
-    .land {
-      fill: #1b252e;
-
-      stroke: #35434f;
-      stroke-width: 1;
-    }
-
-    .india-marker {
-      fill: var(--accent);
-
-      filter:
-        drop-shadow(
-          0 0 6px
-          rgba(95, 211, 255, 0.8)
-        );
-    }
-
-    .map-label {
-      font-size: 9px;
-
-      fill: #596673;
-
-      letter-spacing: 1px;
-    }
-
-    .map-footer {
-      position: absolute;
-
-      left: 28px;
-      right: 28px;
-      bottom: 16px;
-
-      display: flex;
-      justify-content: space-between;
-
-      font-size: 9px;
-
-      color: #5e6b77;
-
-      letter-spacing: 1px;
-
-      text-transform: uppercase;
-
-      z-index: 5;
-    }
-
-    /* =========================================================
-       CALCULATOR
-       ========================================================= */
-
-    .calculator {
-      position: relative;
-      z-index: 5;
-
-      width: min(100%, 420px);
-
-      height: calc(100% - 24px);
-
-      margin: 0 auto;
-
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .display {
-      height: 68px;
-
-      padding: 0 18px;
-
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-
-      border:
-        1px solid var(--line);
-
-      border-radius: 10px;
-
-      background: #090e14;
-
-      font-size: 34px;
-
-      font-weight: 300;
-
-      font-variant-numeric: tabular-nums;
-
-      overflow: hidden;
-    }
-
-    .calculator-subtitle {
-      height: 26px;
-
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-
-      font-size: 9px;
-
-      color: #56616d;
-
-      letter-spacing: 1px;
-
-      text-transform: uppercase;
-    }
-
-    .keys {
-      display: grid;
-
-      grid-template-columns:
-        repeat(4, 1fr);
-
-      gap: 7px;
-    }
-
-    .keys button {
-      height: 48px;
-
-      border:
-        1px solid var(--line);
-
-      border-radius: 8px;
-
-      background: var(--panel-2);
-
-      color: var(--text);
-
-      font-size: 16px;
-
-      font-weight: 400;
-
-      cursor: pointer;
-
-      transition:
-        background 0.15s ease,
-        border-color 0.15s ease,
-        transform 0.08s ease;
-    }
-
-    .keys button:hover {
-      background: #17212b;
-      border-color: #354553;
-    }
-
-    .keys button:active {
-      transform: scale(0.97);
-    }
-
-    .operator {
-      color: var(--accent) !important;
-    }
-
-    .clear {
-      color: var(--danger) !important;
-    }
-
-    .equals {
-      background: var(--accent) !important;
-
-      color: #061017 !important;
-
-      border-color:
-        var(--accent) !important;
-
-      font-weight: 600 !important;
-    }
-
-    /* =========================================================
-       WORLD CLOCKS
-       ========================================================= */
-
-    .world-grid {
-      position: relative;
-      z-index: 5;
-
-      height: calc(100% - 48px);
-
-      display: grid;
-
-      grid-template-columns:
-        repeat(2, 1fr);
-
-      gap: 10px;
-
-      align-content: center;
-    }
-
-    .city {
-      min-height: 100px;
-
-      padding: 14px;
-
-      border:
-        1px solid var(--line);
-
-      border-radius: 10px;
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.025),
-          transparent
-        );
-
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .city-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .city-name {
-      font-size: 10px;
-
-      letter-spacing: 1.5px;
-
-      color: var(--muted);
-    }
-
-    .city-code {
-      font-size: 9px;
-
-      color: #4f5b67;
-
-      letter-spacing: 1px;
-    }
-
-    .city-time {
-      margin-top: 10px;
-
-      font-size: 28px;
-
-      font-weight: 300;
-
-      font-variant-numeric: tabular-nums;
-    }
-
-    .city-date {
-      margin-top: 4px;
-
-      font-size: 9px;
-
-      color: #586572;
-    }
-
-    /* =========================================================
-       ACTIVE PANEL CONTENT
-       ========================================================= */
-
-    .panel.active .clock {
-      text-shadow:
-        0 0 28px
-        rgba(95, 211, 255, 0.14);
-    }
-
-    /* =========================================================
-       RESPONSIVE
-       ========================================================= */
-
-    @media (max-width: 720px) {
-
-      html,
-      body {
-        overflow: auto;
-      }
-
-      .dashboard {
-        width: 100%;
-        height: auto;
-        min-height: 100vh;
-
-        grid-template-columns: 1fr;
-
-        grid-template-rows:
-          repeat(4, minmax(320px, 1fr));
-
-        perspective: none;
-      }
-
-      .panel.active,
-      .dashboard.has-active .panel:not(.active),
-      .panel:hover:not(.active) {
-        transform: none;
-      }
-
-      .dashboard.has-active .panel:not(.active) {
-        opacity: 0.7;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .panel {
-        transition: none;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Portfolio of a Machine Learning Engineer focused on Python, FastAPI, PyTorch, production ML systems and backend engineering.">
+
+    <title>Portfolio | Machine Learning Engineer</title>
+
+    <style>
+        :root {
+            --bg: #07090d;
+            --surface: #0d1118;
+            --surface-2: #111722;
+            --border: rgba(255,255,255,.09);
+            --text: #f2f5f8;
+            --muted: #8e99a8;
+            --accent: #72f1b8;
+            --accent-2: #68a8ff;
+            --danger: #ff6b8a;
+            --max: 1180px;
+            --radius: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 10% 10%, rgba(114,241,184,.08), transparent 25%),
+                radial-gradient(circle at 90% 20%, rgba(104,168,255,.08), transparent 25%),
+                var(--bg);
+            color: var(--text);
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font: inherit;
+        }
+
+        .container {
+            width: min(var(--max), calc(100% - 40px));
+            margin: auto;
+        }
+
+        /* =========================
+           NAVIGATION
+        ========================== */
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+
+            background: rgba(7,9,13,.75);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid transparent;
+
+            transition: .3s ease;
+        }
+
+        nav.scrolled {
+            border-bottom-color: var(--border);
+        }
+
+        .nav-inner {
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-weight: 800;
+            letter-spacing: -1px;
+            font-size: 20px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 26px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .menu-btn {
+            display: none;
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 8px 11px;
+            border-radius: 9px;
+            cursor: pointer;
+        }
+
+        /* =========================
+           HERO
+        ========================== */
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 90px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr .8fr;
+            gap: 70px;
+            align-items: center;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 7vw, 88px);
+            line-height: .95;
+            letter-spacing: -5px;
+            max-width: 850px;
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+        }
+
+        .hero-description {
+            margin-top: 28px;
+            color: var(--muted);
+            font-size: 18px;
+            max-width: 690px;
+        }
+
+        .hero-actions {
+            margin-top: 35px;
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            transition: .2s;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #06100b;
+            border-color: var(--accent);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 35px rgba(114,241,184,.18);
+        }
+
+        .btn-secondary:hover {
+            border-color: rgba(255,255,255,.25);
+            background: rgba(255,255,255,.03);
+        }
+
+        /* =========================
+           TERMINAL
+        ========================== */
+
+        .terminal {
+            background: rgba(13,17,24,.85);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,.3);
+        }
+
+        .terminal-top {
+            padding: 13px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 7px;
+        }
+
+        .terminal-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #39424e;
+        }
+
+        .terminal-body {
+            padding: 25px;
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-size: 13px;
+            color: #aeb8c5;
+        }
+
+        .terminal-line {
+            margin-bottom: 13px;
+        }
+
+        .prompt {
+            color: var(--accent);
+        }
+
+        .command {
+            color: white;
+        }
+
+        .terminal-value {
+            color: var(--accent-2);
+        }
+
+        /* =========================
+           SECTIONS
+        ========================== */
+
+        section {
+            padding: 110px 0;
+        }
+
+        .section-header {
+            margin-bottom: 55px;
+            max-width: 700px;
+        }
+
+        .section-number {
+            color: var(--accent);
+            font-family: monospace;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: clamp(32px, 5vw, 52px);
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+
+        .section-description {
+            margin-top: 18px;
+            color: var(--muted);
+        }
+
+        /* =========================
+           ABOUT
+        ========================== */
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: rgba(13,17,24,.75);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+        }
+
+        .card h3 {
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .card p {
+            color: var(--muted);
+        }
+
+        .principles {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .principle {
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(255,255,255,.015);
+        }
+
+        .principle strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .principle span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* =========================
+           SKILLS
+        ========================== */
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .skill-card {
+            padding: 24px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: rgba(13,17,24,.65);
+        }
+
+        .skill-card h3 {
+            margin-bottom: 17px;
+            font-size: 16px;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            padding: 6px 10px;
+            border-radius: 7px;
+            background: rgba(255,255,255,.045);
+            border: 1px solid var(--border);
+            color: #cbd3dc;
+            font-size: 12px;
+        }
+
+        /* =========================
+           PROJECTS
+        ========================== */
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .project {
+            min-height: 310px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background:
+                linear-gradient(145deg, rgba(255,255,255,.035), transparent 50%),
+                var(--surface);
+            transition: .25s ease;
+        }
+
+        .project:hover {
+            transform: translateY(-5px);
+            border-color: rgba(114,241,184,.25);
+        }
+
+        .project-number {
+            font-family: monospace;
+            color: var(--accent);
+            font-size: 12px;
+        }
+
+        .project h3 {
+            margin-top: 18px;
+            font-size: 25px;
+        }
+
+        .project p {
+            margin-top: 10px;
+            color: var(--muted);
+        }
+
+        .project-footer {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .project-stack {
+            color: #9ca8b7;
+            font-size: 12px;
+        }
+
+        .project-link {
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* =========================
+           JOURNEY
+        ========================== */
+
+        .timeline {
+            position: relative;
+            max-width: 900px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 5px;
+            bottom: 5px;
+            width: 1px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 45px;
+            padding-bottom: 45px;
+        }
+
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 3px;
+            top: 4px;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            background: var(--bg);
+        }
+
+        .timeline-year {
+            color: var(--accent);
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .timeline-item h3 {
+            margin-top: 5px;
+            font-size: 20px;
+        }
+
+        .timeline-item p {
+            color: var(--muted);
+            margin-top: 7px;
+            max-width: 700px;
+        }
+
+        /* =========================
+           LEARNING LAB
+        ========================== */
+
+        .lab {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .lab-card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            background: var(--surface);
+        }
+
+        .lab-card h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .lab-card p {
+            color: var(--muted);
+        }
+
+        .metric {
+            margin-top: 25px;
+            display: flex;
+            gap: 35px;
+        }
+
+        .metric strong {
+            display: block;
+            font-size: 28px;
+            color: var(--accent);
+        }
+
+        .metric span {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* =========================
+           LIFE / ACTIVITY
+        ========================== */
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .activity {
+            padding: 25px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: rgba(13,17,24,.6);
+        }
+
+        .activity-icon {
+            font-size: 25px;
+            margin-bottom: 15px;
+        }
+
+        .activity h3 {
+            font-size: 17px;
+        }
+
+        .activity p {
+            color: var(--muted);
+            margin-top: 7px;
+            font-size: 14px;
+        }
+
+        /* =========================
+           CAREER
+        ========================== */
+
+        .career {
+            padding: 45px;
+            border: 1px solid rgba(114,241,184,.15);
+            background:
+                radial-gradient(circle at 90% 10%, rgba(114,241,184,.08), transparent 35%),
+                var(--surface);
+            border-radius: 24px;
+        }
+
+        .career h2 {
+            font-size: clamp(30px, 5vw, 50px);
+            max-width: 800px;
+            line-height: 1.05;
+            letter-spacing: -2px;
+        }
+
+        .career p {
+            max-width: 720px;
+            margin-top: 18px;
+            color: var(--muted);
+        }
+
+        /* =========================
+           CONTACT
+        ========================== */
+
+        .contact {
+            text-align: center;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .contact h2 {
+            font-size: clamp(38px, 6vw, 65px);
+            letter-spacing: -3px;
+        }
+
+        .contact p {
+            color: var(--muted);
+            margin: 20px auto 30px;
+            max-width: 600px;
+        }
+
+        .socials {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .social {
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 10px 15px;
+            font-size: 13px;
+            color: var(--muted);
+            transition: .2s;
+        }
+
+        .social:hover {
+            color: var(--text);
+            border-color: rgba(255,255,255,.25);
+        }
+
+        /* =========================
+           FOOTER
+        ========================== */
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 25px 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        /* =========================
+           REVEAL ANIMATION
+        ========================== */
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: .7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================== */
+
+        @media (max-width: 850px) {
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 72px;
+                left: 0;
+                width: 100%;
+                padding: 20px;
+                background: rgba(7,9,13,.96);
+                border-bottom: 1px solid var(--border);
+                flex-direction: column;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .hero-grid,
+            .about-grid,
+            .lab {
+                grid-template-columns: 1fr;
+            }
+
+            .skills-grid,
+            .activity-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .projects {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                letter-spacing: -3px;
+            }
+        }
+
+        @media (max-width: 560px) {
+
+            .container {
+                width: min(var(--max), calc(100% - 28px));
+            }
+
+            section {
+                padding: 75px 0;
+            }
+
+            .skills-grid,
+            .activity-grid,
+            .principles {
+                grid-template-columns: 1fr;
+            }
+
+            .career {
+                padding: 28px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-  <main class="dashboard">
+<!-- =========================
+     NAVIGATION
+========================== -->
 
-    <!-- =====================================================
-         1. CLOCK
-         ===================================================== -->
+<nav id="navbar">
+    <div class="container nav-inner">
 
-    <section class="panel clock-panel">
+        <a href="#home" class="logo">
+            Decoder<span>.</span>
+        </a>
 
-      <span class="corner tl"></span>
-      <span class="corner br"></span>
+        <button class="menu-btn" id="menuBtn">
+            MENU
+        </button>
 
-      <div class="panel-header">
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#journey">Journey</a></li>
+            <li><a href="#lab">Lab</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
 
-        <div class="label">
-          Local Time
+    </div>
+</nav>
+
+
+<!-- =========================
+     HERO
+========================== -->
+
+<main>
+
+<section class="hero" id="home">
+
+    <div class="container hero-grid">
+
+        <div class="reveal">
+
+            <div class="eyebrow">
+                <span class="status-dot"></span>
+                Machine Learning Engineer
+            </div>
+
+            <h1>
+                Building systems
+                <span>that learn.</span>
+            </h1>
+
+            <p class="hero-description">
+                I work at the intersection of machine learning, backend engineering,
+                APIs and production systems — turning ideas into software that can
+                actually run, scale and be measured.
+            </p>
+
+            <div class="hero-actions">
+
+                <a class="btn btn-primary" href="#projects">
+                    Explore Projects
+                </a>
+
+                <a class="btn btn-secondary" href="#contact">
+                    Contact Me
+                </a>
+
+            </div>
+
         </div>
 
-        <div class="status">
-          <span class="status-dot"></span>
-          System Online
+
+        <div class="terminal reveal">
+
+            <div class="terminal-top">
+                <span class="terminal-dot"></span>
+                <span class="terminal-dot"></span>
+                <span class="terminal-dot"></span>
+            </div>
+
+            <div class="terminal-body">
+
+                <div class="terminal-line">
+                    <span class="prompt">$</span>
+                    <span class="command">whoami</span>
+                </div>
+
+                <div class="terminal-line">
+                    ml_engineer
+                </div>
+
+                <div class="terminal-line">
+                    <span class="prompt">$</span>
+                    <span class="command">focus</span>
+                </div>
+
+                <div class="terminal-line">
+                    <span class="terminal-value">
+                        production_ml + backend + ai
+                    </span>
+                </div>
+
+                <div class="terminal-line">
+                    <span class="prompt">$</span>
+                    <span class="command">stack</span>
+                </div>
+
+                <div class="terminal-line">
+                    Python / FastAPI / PyTorch / Docker
+                </div>
+
+                <div class="terminal-line">
+                    Redis / PostgreSQL / Git / Linux
+                </div>
+
+                <div class="terminal-line">
+                    <span class="prompt">$</span>
+                    <span class="command">status</span>
+                </div>
+
+                <div class="terminal-line">
+                    <span class="terminal-value">
+                        continuously_learning
+                    </span>
+                </div>
+
+            </div>
+
         </div>
 
-      </div>
+    </div>
 
-      <div class="clock-content">
+</section>
 
-        <div
-          id="clock"
-          class="clock"
-        >
-          00:00:00
+
+<!-- =========================
+     ABOUT
+========================== -->
+
+<section id="about">
+
+    <div class="container">
+
+        <div class="section-header reveal">
+            <div class="section-number">01 / ABOUT</div>
+
+            <h2 class="section-title">
+                Engineer first.<br>
+                Learner always.
+            </h2>
+
+            <p class="section-description">
+                My journey has moved from software development and web APIs
+                toward machine learning engineering and production AI systems.
+            </p>
         </div>
 
-        <div class="clock-unit">
-          India Standard Time
+
+        <div class="about-grid">
+
+            <div class="card reveal">
+
+                <h3>Who I am</h3>
+
+                <p>
+                    I am a Machine Learning Engineer with a background in
+                    Information Technology and software development. My work
+                    combines Python, backend APIs, machine learning and
+                    infrastructure.
+                </p>
+
+                <br>
+
+                <p>
+                    Rather than treating ML as only model training, I am
+                    interested in the complete system: data, inference,
+                    APIs, caching, workers, deployment, testing,
+                    monitoring and performance.
+                </p>
+
+            </div>
+
+
+            <div class="card reveal">
+
+                <h3>How I work</h3>
+
+                <div class="principles">
+
+                    <div class="principle">
+                        <strong>Build</strong>
+                        <span>Turn concepts into working systems.</span>
+                    </div>
+
+                    <div class="principle">
+                        <strong>Measure</strong>
+                        <span>Use metrics instead of assumptions.</span>
+                    </div>
+
+                    <div class="principle">
+                        <strong>Debug</strong>
+                        <span>Understand failures at system level.</span>
+                    </div>
+
+                    <div class="principle">
+                        <strong>Document</strong>
+                        <span>Make systems reproducible.</span>
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div
-          id="date"
-          class="date"
-        >
-          Loading...
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SKILLS
+========================== -->
+
+<section id="skills">
+
+    <div class="container">
+
+        <div class="section-header reveal">
+            <div class="section-number">02 / TOOLBOX</div>
+
+            <h2 class="section-title">
+                Technical stack.
+            </h2>
+
+            <p class="section-description">
+                A practical stack built around Python, ML engineering,
+                backend systems and developer tooling.
+            </p>
         </div>
 
-        <div class="location">
-          Gorakhpur · Uttar Pradesh · India
+
+        <div class="skills-grid">
+
+            <div class="skill-card reveal">
+                <h3>Machine Learning</h3>
+
+                <div class="tags">
+                    <span class="tag">PyTorch</span>
+                    <span class="tag">TensorFlow</span>
+                    <span class="tag">Scikit-learn</span>
+                    <span class="tag">NLP</span>
+                    <span class="tag">RNN</span>
+                    <span class="tag">Model Evaluation</span>
+                </div>
+            </div>
+
+
+            <div class="skill-card reveal">
+                <h3>Backend</h3>
+
+                <div class="tags">
+                    <span class="tag">Python</span>
+                    <span class="tag">FastAPI</span>
+                    <span class="tag">Flask</span>
+                    <span class="tag">REST APIs</span>
+                    <span class="tag">AsyncIO</span>
+                    <span class="tag">Rails</span>
+                </div>
+            </div>
+
+
+            <div class="skill-card reveal">
+                <h3>Data</h3>
+
+                <div class="tags">
+                    <span class="tag">PostgreSQL</span>
+                    <span class="tag">MySQL</span>
+                    <span class="tag">MongoDB</span>
+                    <span class="tag">Pandas</span>
+                    <span class="tag">NumPy</span>
+                    <span class="tag">SQL</span>
+                </div>
+            </div>
+
+
+            <div class="skill-card reveal">
+                <h3>Infrastructure</h3>
+
+                <div class="tags">
+                    <span class="tag">Docker</span>
+                    <span class="tag">Redis</span>
+                    <span class="tag">Linux</span>
+                    <span class="tag">AWS</span>
+                    <span class="tag">CI/CD</span>
+                    <span class="tag">Load Testing</span>
+                </div>
+            </div>
+
+
+            <div class="skill-card reveal">
+                <h3>Development</h3>
+
+                <div class="tags">
+                    <span class="tag">Git</span>
+                    <span class="tag">GitHub</span>
+                    <span class="tag">Bash</span>
+                    <span class="tag">Testing</span>
+                    <span class="tag">pytest</span>
+                    <span class="tag">Debugging</span>
+                </div>
+            </div>
+
+
+            <div class="skill-card reveal">
+                <h3>Web</h3>
+
+                <div class="tags">
+                    <span class="tag">HTML</span>
+                    <span class="tag">CSS</span>
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">Leaflet</span>
+                    <span class="tag">Jekyll</span>
+                    <span class="tag">GitHub Pages</span>
+                </div>
+            </div>
+
         </div>
 
-      </div>
+    </div>
 
-      <div class="clock-meta">
+</section>
 
-        <span>LOCAL</span>
-        <span>24 HOUR</span>
-        <span id="utcOffset">
-          UTC+05:30
+
+<!-- =========================
+     PROJECTS
+========================== -->
+
+<section id="projects">
+
+    <div class="container">
+
+        <div class="section-header reveal">
+            <div class="section-number">03 / PROJECTS</div>
+
+            <h2 class="section-title">
+                Things I build.
+            </h2>
+
+            <p class="section-description">
+                Projects are where I turn learning into engineering experience.
+            </p>
+        </div>
+
+
+        <div class="projects">
+
+
+            <article class="project reveal">
+
+                <div>
+
+                    <div class="project-number">01</div>
+
+                    <h3>Production ML Inference API</h3>
+
+                    <p>
+                        A production-oriented ML serving architecture using
+                        FastAPI, PyTorch, Redis, workers and Docker.
+                        The system focuses on inference lifecycle,
+                        caching, concurrency and performance measurement.
+                    </p>
+
+                </div>
+
+                <div class="project-footer">
+
+                    <span class="project-stack">
+                        FastAPI · PyTorch · Redis · Docker
+                    </span>
+
+                    <a href="#" class="project-link">
+                        View Project →
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <article class="project reveal">
+
+                <div>
+
+                    <div class="project-number">02</div>
+
+                    <h3>GitaLens</h3>
+
+                    <p>
+                        A local AI system designed around semantic retrieval,
+                        query analysis, verse retrieval, reranking,
+                        metaphysical analysis and structured response generation.
+                    </p>
+
+                </div>
+
+                <div class="project-footer">
+
+                    <span class="project-stack">
+                        Python · FastAPI · NLP · Retrieval
+                    </span>
+
+                    <a href="#" class="project-link">
+                        View Project →
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <article class="project reveal">
+
+                <div>
+
+                    <div class="project-number">03</div>
+
+                    <h3>NetTrace</h3>
+
+                    <p>
+                        A network visualization project combining real
+                        traceroute data, IP geolocation and an interactive
+                        world map to visualize network hops.
+                    </p>
+
+                </div>
+
+                <div class="project-footer">
+
+                    <span class="project-stack">
+                        FastAPI · Traceroute · Leaflet · JavaScript
+                    </span>
+
+                    <a href="#" class="project-link">
+                        View Project →
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <article class="project reveal">
+
+                <div>
+
+                    <div class="project-number">04</div>
+
+                    <h3>AI LMS</h3>
+
+                    <p>
+                        An AI-powered learning management system concept
+                        combining backend APIs, ML pipelines, student
+                        profiling and structured software development practices.
+                    </p>
+
+                </div>
+
+                <div class="project-footer">
+
+                    <span class="project-stack">
+                        Python · FastAPI · ML · PostgreSQL
+                    </span>
+
+                    <a href="#" class="project-link">
+                        View Project →
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <article class="project reveal">
+
+                <div>
+
+                    <div class="project-number">05</div>
+
+                    <h3>NLP / RNN Experiments</h3>
+
+                    <p>
+                        Practical NLP experimentation covering preprocessing,
+                        tokenization, padding, text classification and
+                        next-word prediction using recurrent neural networks.
+                    </p>
+
+                </div>
+
+                <div class="project-footer">
+
+                    <span class="project-stack">
+                        Python · TensorFlow · NLP
+                    </span>
+
+                    <a href="#" class="project-link">
+                        View Project →
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <article class="project reveal">
+
+                <div>
+
+                    <div class="project-number">06</div>
+
+                    <h3>Backend / Rails Systems</h3>
+
+                    <p>
+                        Web application work involving CRUD operations,
+                        authentication, PostgreSQL, REST APIs,
+                        testing and security-oriented development.
+                    </p>
+
+                </div>
+
+                <div class="project-footer">
+
+                    <span class="project-stack">
+                        Ruby · Rails · PostgreSQL · REST
+                    </span>
+
+                    <a href="#" class="project-link">
+                        View Project →
+                    </a>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     JOURNEY
+========================== -->
+
+<section id="journey">
+
+    <div class="container">
+
+        <div class="section-header reveal">
+            <div class="section-number">04 / JOURNEY</div>
+
+            <h2 class="section-title">
+                From software<br>
+                to ML systems.
+            </h2>
+        </div>
+
+
+        <div class="timeline">
+
+            <div class="timeline-item reveal">
+
+                <div class="timeline-dot"></div>
+
+                <div class="timeline-year">2019 — 2023</div>
+
+                <h3>B.Tech — Information Technology</h3>
+
+                <p>
+                    Built the academic foundation across programming,
+                    software engineering, databases, web technologies
+                    and computer science.
+                </p>
+
+            </div>
+
+
+            <div class="timeline-item reveal">
+
+                <div class="timeline-dot"></div>
+
+                <div class="timeline-year">2023 — 2024</div>
+
+                <h3>Software Development</h3>
+
+                <p>
+                    Worked with backend technologies, APIs, databases,
+                    application development and software engineering workflows.
+                </p>
+
+            </div>
+
+
+            <div class="timeline-item reveal">
+
+                <div class="timeline-dot"></div>
+
+                <div class="timeline-year">2024 — Present</div>
+
+                <h3>Machine Learning Engineering</h3>
+
+                <p>
+                    Shifted deeper into machine learning, Python,
+                    model development, data processing and ML integration
+                    with backend systems.
+                </p>
+
+            </div>
+
+
+            <div class="timeline-item reveal">
+
+                <div class="timeline-dot"></div>
+
+                <div class="timeline-year">Current</div>
+
+                <h3>Production AI Engineering</h3>
+
+                <p>
+                    Focusing on the engineering layer around ML:
+                    inference APIs, Redis caching, workers,
+                    Docker, observability, performance and deployment.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     LEARNING LAB
+========================== -->
+
+<section id="lab">
+
+    <div class="container">
+
+        <div class="section-header reveal">
+
+            <div class="section-number">05 / CURRENT LAB</div>
+
+            <h2 class="section-title">
+                Learning by building.
+            </h2>
+
+            <p class="section-description">
+                The current learning strategy is practical:
+                build the architecture, test it, measure it,
+                break it and improve it.
+            </p>
+
+        </div>
+
+
+        <div class="lab">
+
+            <div class="lab-card reveal">
+
+                <h3>Production ML Serving</h3>
+
+                <p>
+                    Working through a complete inference architecture:
+                    API gateway → model worker → Redis → caching →
+                    Docker → monitoring → load testing → optimization.
+                </p>
+
+                <div class="metric">
+
+                    <div>
+                        <strong>48ms</strong>
+                        <span>Target p95 latency</span>
+                    </div>
+
+                    <div>
+                        <strong>1.1K</strong>
+                        <span>Target RPM</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="lab-card reveal">
+
+                <h3>Engineering Method</h3>
+
+                <p>
+                    Instead of learning technologies independently,
+                    I connect them into complete systems and use projects
+                    as the learning environment.
+                </p>
+
+                <div class="tags" style="margin-top:25px">
+
+                    <span class="tag">Build</span>
+                    <span class="tag">Test</span>
+                    <span class="tag">Measure</span>
+                    <span class="tag">Debug</span>
+                    <span class="tag">Optimize</span>
+                    <span class="tag">Document</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     ACTIVITY
+========================== -->
+
+<section>
+
+    <div class="container">
+
+        <div class="section-header reveal">
+
+            <div class="section-number">06 / BEYOND PROJECTS</div>
+
+            <h2 class="section-title">
+                Always experimenting.
+            </h2>
+
+        </div>
+
+
+        <div class="activity-grid">
+
+            <div class="activity reveal">
+                <div class="activity-icon">⌘</div>
+
+                <h3>Build</h3>
+
+                <p>
+                    Small tools, experiments and complete applications
+                    are used to turn concepts into practical experience.
+                </p>
+            </div>
+
+
+            <div class="activity reveal">
+                <div class="activity-icon">◉</div>
+
+                <h3>Explore</h3>
+
+                <p>
+                    Exploring Linux, local AI, developer tooling,
+                    APIs, infrastructure and new engineering workflows.
+                </p>
+            </div>
+
+
+            <div class="activity reveal">
+                <div class="activity-icon">↗</div>
+
+                <h3>Improve</h3>
+
+                <p>
+                    Revisiting projects to improve architecture,
+                    reproducibility, performance and user experience.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CAREER
+========================== -->
+
+<section>
+
+    <div class="container">
+
+        <div class="career reveal">
+
+            <h2>
+                The goal is not just to train models.
+                It is to build systems around them.
+            </h2>
+
+            <p>
+                My career direction is toward engineering roles where
+                machine learning, backend development and production
+                infrastructure meet.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     CONTACT
+========================== -->
+
+<section id="contact">
+
+    <div class="container">
+
+        <div class="contact reveal">
+
+            <div class="section-number">07 / CONTACT</div>
+
+            <h2>
+                Let's build something useful.
+            </h2>
+
+            <p>
+                Open to discussing machine learning engineering,
+                backend systems, AI applications and technical projects.
+            </p>
+
+            <div class="socials">
+
+                <a class="social"
+                   href="https://github.com/Decoder76"
+                   target="_blank">
+                    GitHub
+                </a>
+
+                <a class="social"
+                   href="#"
+                   target="_blank">
+                    LinkedIn
+                </a>
+
+                <a class="social"
+                   href="mailto:your-email@example.com">
+                    Email
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================== -->
+
+<footer>
+
+    <div class="container footer-inner">
+
+        <span>
+            © 2026 Decoder
         </span>
 
-      </div>
+        <span>
+            Built with HTML · CSS · JavaScript
+        </span>
 
-    </section>
+    </div>
 
+</footer>
 
-    <!-- =====================================================
-         2. WORLD MAP
-         ===================================================== -->
 
-    <section class="panel map-panel">
+<script>
 
-      <span class="corner tl"></span>
-      <span class="corner br"></span>
+    /* =========================
+       MOBILE MENU
+    ========================== */
 
-      <div class="panel-header">
+    const menuBtn = document.getElementById("menuBtn");
+    const navLinks = document.getElementById("navLinks");
 
-        <div class="label">
-          Global View
-        </div>
+    menuBtn.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+    });
 
-        <div class="status">
-          <span class="status-dot"></span>
-          Live Position
-        </div>
-
-      </div>
-
-      <div class="map-wrap">
-
-        <div class="world-map">
-
-          <svg
-            viewBox="0 0 1000 500"
-            aria-label="World map"
-          >
-
-            <!-- Grid -->
-
-            <path
-              class="graticule"
-              d="M0 125 H1000"
-            />
-
-            <path
-              class="graticule"
-              d="M0 250 H1000"
-            />
-
-            <path
-              class="graticule"
-              d="M0 375 H1000"
-            />
-
-            <path
-              class="graticule"
-              d="M125 0 V500"
-            />
-
-            <path
-              class="graticule"
-              d="M250 0 V500"
-            />
-
-            <path
-              class="graticule"
-              d="M375 0 V500"
-            />
-
-            <path
-              class="graticule"
-              d="M500 0 V500"
-            />
-
-            <path
-              class="graticule"
-              d="M625 0 V500"
-            />
-
-            <path
-              class="graticule"
-              d="M750 0 V500"
-            />
-
-            <path
-              class="graticule"
-              d="M875 0 V500"
-            />
-
-            <!-- North America -->
-
-            <path
-              class="land"
-              d="
-                M80 125
-                L115 95
-                L190 92
-                L250 125
-                L275 160
-                L240 188
-                L212 182
-                L190 218
-                L151 210
-                L132 183
-                L102 172
-                L92 145
-                Z
-              "
-            />
-
-            <!-- South America -->
-
-            <path
-              class="land"
-              d="
-                M270 235
-                L305 255
-                L324 300
-                L318 347
-                L294 400
-                L268 443
-                L247 397
-                L259 347
-                L246 306
-                L252 271
-                Z
-              "
-            />
-
-            <!-- Europe -->
-
-            <path
-              class="land"
-              d="
-                M455 120
-                L490 105
-                L530 115
-                L544 143
-                L519 158
-                L482 155
-                L462 142
-                Z
-              "
-            />
-
-            <!-- Asia -->
-
-            <path
-              class="land"
-              d="
-                M525 115
-                L602 88
-                L690 92
-                L768 112
-                L837 148
-                L868 179
-                L831 208
-                L774 201
-                L724 183
-                L674 188
-                L626 166
-                L572 168
-                L543 145
-                Z
-              "
-            />
-
-            <!-- Africa -->
-
-            <path
-              class="land"
-              d="
-                M478 195
-                L528 190
-                L570 216
-                L588 263
-                L575 322
-                L547 370
-                L510 399
-                L486 364
-                L472 314
-                L456 263
-                Z
-              "
-            />
-
-            <!-- Australia -->
-
-            <path
-              class="land"
-              d="
-                M751 331
-                L813 312
-                L867 331
-                L898 366
-                L868 399
-                L808 411
-                L764 394
-                L740 363
-                Z
-              "
-            />
-
-            <!-- India marker -->
-
-            <circle
-              class="india-marker"
-              cx="657"
-              cy="192"
-              r="6"
-            />
-
-            <!-- Labels -->
-
-            <text
-              x="105"
-              y="70"
-              class="map-label"
-            >
-              NORTH AMERICA
-            </text>
-
-            <text
-              x="455"
-              y="92"
-              class="map-label"
-            >
-              EUROPE
-            </text>
-
-            <text
-              x="615"
-              y="73"
-              class="map-label"
-            >
-              ASIA
-            </text>
-
-            <text
-              x="490"
-              y="420"
-              class="map-label"
-            >
-              AFRICA
-            </text>
-
-            <text
-              x="755"
-              y="438"
-              class="map-label"
-            >
-              AUSTRALIA
-            </text>
-
-          </svg>
-
-        </div>
-
-        <div class="map-footer">
-
-          <span>
-            INDIA · 26.76°N 83.37°E
-          </span>
-
-          <span>
-            WORLD GRID
-          </span>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         3. CALCULATOR
-         ===================================================== -->
-
-    <section class="panel">
-
-      <span class="corner tl"></span>
-      <span class="corner br"></span>
-
-      <div class="panel-header">
-
-        <div class="label">
-          Calculator
-        </div>
-
-        <div class="status">
-          Local
-        </div>
-
-      </div>
-
-      <div class="calculator">
-
-        <div
-          id="display"
-          class="display"
-        >
-          0
-        </div>
-
-        <div class="calculator-subtitle">
-          Standard Arithmetic
-        </div>
-
-        <div class="keys">
-
-          <button
-            class="clear"
-            onclick="clearCalculator()"
-          >
-            C
-          </button>
-
-          <button onclick="backspace()">
-            ⌫
-          </button>
-
-          <button onclick="percentage()">
-            %
-          </button>
-
-          <button
-            class="operator"
-            onclick="setOperator('/')"
-          >
-            ÷
-          </button>
-
-          <button onclick="number('7')">
-            7
-          </button>
-
-          <button onclick="number('8')">
-            8
-          </button>
-
-          <button onclick="number('9')">
-            9
-          </button>
-
-          <button
-            class="operator"
-            onclick="setOperator('*')"
-          >
-            ×
-          </button>
-
-          <button onclick="number('4')">
-            4
-          </button>
-
-          <button onclick="number('5')">
-            5
-          </button>
-
-          <button onclick="number('6')">
-            6
-          </button>
-
-          <button
-            class="operator"
-            onclick="setOperator('-')"
-          >
-            −
-          </button>
-
-          <button onclick="number('1')">
-            1
-          </button>
-
-          <button onclick="number('2')">
-            2
-          </button>
-
-          <button onclick="number('3')">
-            3
-          </button>
-
-          <button
-            class="operator"
-            onclick="setOperator('+')"
-          >
-            +
-          </button>
-
-          <button onclick="number('0')">
-            0
-          </button>
-
-          <button onclick="decimal()">
-            .
-          </button>
-
-          <button
-            class="equals"
-            onclick="calculate()"
-          >
-            =
-          </button>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         4. WORLD CLOCKS
-         ===================================================== -->
-
-    <section class="panel">
-
-      <span class="corner tl"></span>
-      <span class="corner br"></span>
-
-      <div class="panel-header">
-
-        <div class="label">
-          World Time
-        </div>
-
-        <div class="status">
-          <span class="status-dot"></span>
-          Synchronized
-        </div>
-
-      </div>
-
-      <div class="world-grid">
-
-        <article class="city">
-
-          <div class="city-top">
-
-            <div class="city-name">
-              NEW YORK
-            </div>
-
-            <div class="city-code">
-              EST / EDT
-            </div>
-
-          </div>
-
-          <div
-            id="newYork"
-            class="city-time"
-          >
-            --:--:--
-          </div>
-
-          <div
-            id="newYorkDate"
-            class="city-date"
-          >
-            ---
-          </div>
-
-        </article>
-
-
-        <article class="city">
-
-          <div class="city-top">
-
-            <div class="city-name">
-              LONDON
-            </div>
-
-            <div class="city-code">
-              GMT / BST
-            </div>
-
-          </div>
-
-          <div
-            id="london"
-            class="city-time"
-          >
-            --:--:--
-          </div>
-
-          <div
-            id="londonDate"
-            class="city-date"
-          >
-            ---
-          </div>
-
-        </article>
-
-
-        <article class="city">
-
-          <div class="city-top">
-
-            <div class="city-name">
-              DUBAI
-            </div>
-
-            <div class="city-code">
-              GST
-            </div>
-
-          </div>
-
-          <div
-            id="dubai"
-            class="city-time"
-          >
-            --:--:--
-          </div>
-
-          <div
-            id="dubaiDate"
-            class="city-date"
-          >
-            ---
-          </div>
-
-        </article>
-
-
-        <article class="city">
-
-          <div class="city-top">
-
-            <div class="city-name">
-              TOKYO
-            </div>
-
-            <div class="city-code">
-              JST
-            </div>
-
-          </div>
-
-          <div
-            id="tokyo"
-            class="city-time"
-          >
-            --:--:--
-          </div>
-
-          <div
-            id="tokyoDate"
-            class="city-date"
-          >
-            ---
-          </div>
-
-        </article>
-
-      </div>
-
-    </section>
-
-  </main>
-
-
-  <script>
-
-    /* =========================================================
-       LOCAL CLOCK
-       ========================================================= */
-
-    function updateLocalClock() {
-
-      const now = new Date();
-
-      document.getElementById("clock").textContent =
-        now.toLocaleTimeString("en-IN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false
+    document.querySelectorAll(".nav-links a").forEach(link => {
+        link.addEventListener("click", () => {
+            navLinks.classList.remove("active");
         });
+    });
 
-      document.getElementById("date").textContent =
-        now.toLocaleDateString("en-IN", {
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        });
 
-      const offsetMinutes =
-        -now.getTimezoneOffset();
+    /* =========================
+       NAVBAR SCROLL
+    ========================== */
 
-      const sign =
-        offsetMinutes >= 0
-          ? "+"
-          : "-";
+    const navbar = document.getElementById("navbar");
 
-      const hours =
-        String(
-          Math.floor(
-            Math.abs(offsetMinutes) / 60
-          )
-        ).padStart(2, "0");
+    window.addEventListener("scroll", () => {
 
-      const minutes =
-        String(
-          Math.abs(offsetMinutes) % 60
-        ).padStart(2, "0");
-
-      document.getElementById("utcOffset")
-        .textContent =
-        `UTC${sign}${hours}:${minutes}`;
-    }
-
-
-    /* =========================================================
-       WORLD CLOCKS
-       ========================================================= */
-
-    const cities = {
-
-      newYork: {
-        zone: "America/New_York",
-        dateId: "newYorkDate"
-      },
-
-      london: {
-        zone: "Europe/London",
-        dateId: "londonDate"
-      },
-
-      dubai: {
-        zone: "Asia/Dubai",
-        dateId: "dubaiDate"
-      },
-
-      tokyo: {
-        zone: "Asia/Tokyo",
-        dateId: "tokyoDate"
-      }
-
-    };
-
-
-    function updateWorldClocks() {
-
-      const now = new Date();
-
-      Object.entries(cities)
-        .forEach(([city, config]) => {
-
-          document.getElementById(city)
-            .textContent =
-            new Intl.DateTimeFormat(
-              "en-US",
-              {
-                timeZone: config.zone,
-
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-
-                hour12: false
-              }
-            ).format(now);
-
-          document.getElementById(
-            config.dateId
-          ).textContent =
-            new Intl.DateTimeFormat(
-              "en-US",
-              {
-                timeZone: config.zone,
-
-                weekday: "short",
-                day: "numeric",
-                month: "short"
-              }
-            ).format(now);
-
-        });
-    }
-
-
-    /* =========================================================
-       CALCULATOR
-       ========================================================= */
-
-    let current = "";
-    let previous = "";
-    let operator = null;
-    let resetDisplay = false;
-
-    const display =
-      document.getElementById("display");
-
-
-    function render() {
-
-      display.textContent =
-        current || "0";
-
-    }
-
-
-    function number(value) {
-
-      if (resetDisplay) {
-        current = "";
-        resetDisplay = false;
-      }
-
-      if (current === "0") {
-        current = value;
-      } else {
-        current += value;
-      }
-
-      render();
-
-    }
-
-
-    function decimal() {
-
-      if (resetDisplay) {
-        current = "";
-        resetDisplay = false;
-      }
-
-      if (!current.includes(".")) {
-
-        current +=
-          current
-            ? "."
-            : "0.";
-
-      }
-
-      render();
-
-    }
-
-
-    function setOperator(value) {
-
-      if (!current) {
-        return;
-      }
-
-      if (
-        previous &&
-        operator &&
-        !resetDisplay
-      ) {
-        calculate();
-      }
-
-      previous = current;
-
-      operator = value;
-
-      resetDisplay = true;
-
-    }
-
-
-    function calculate() {
-
-      if (
-        !previous ||
-        !current ||
-        !operator
-      ) {
-        return;
-      }
-
-      const a = Number(previous);
-      const b = Number(current);
-
-      let result;
-
-      switch (operator) {
-
-        case "+":
-          result = a + b;
-          break;
-
-        case "-":
-          result = a - b;
-          break;
-
-        case "*":
-          result = a * b;
-          break;
-
-        case "/":
-
-          result =
-            b === 0
-              ? "Error"
-              : a / b;
-
-          break;
-
-      }
-
-      current =
-        typeof result === "number"
-          ? String(
-              Number(
-                result.toFixed(10)
-              )
-            )
-          : result;
-
-      previous = "";
-      operator = null;
-      resetDisplay = true;
-
-      render();
-
-    }
-
-
-    function clearCalculator() {
-
-      current = "";
-      previous = "";
-      operator = null;
-      resetDisplay = false;
-
-      render();
-
-    }
-
-
-    function backspace() {
-
-      if (
-        !current ||
-        resetDisplay
-      ) {
-        return;
-      }
-
-      current =
-        current.slice(0, -1);
-
-      render();
-
-    }
-
-
-    function percentage() {
-
-      if (!current) {
-        return;
-      }
-
-      current =
-        String(
-          Number(current) / 100
-        );
-
-      render();
-
-    }
-
-
-    /* =========================================================
-       CALCULATOR KEYBOARD
-       ========================================================= */
-
-    document.addEventListener(
-      "keydown",
-      event => {
-
-        if (
-          event.key >= "0" &&
-          event.key <= "9"
-        ) {
-          number(event.key);
+        if (window.scrollY > 20) {
+            navbar.classList.add("scrolled");
+        } else {
+            navbar.classList.remove("scrolled");
         }
-
-        else if (
-          event.key === "."
-        ) {
-          decimal();
-        }
-
-        else if (
-          event.key === "+" ||
-          event.key === "-" ||
-          event.key === "*" ||
-          event.key === "/"
-        ) {
-          setOperator(event.key);
-        }
-
-        else if (
-          event.key === "Enter" ||
-          event.key === "="
-        ) {
-          calculate();
-        }
-
-        else if (
-          event.key === "Backspace"
-        ) {
-          backspace();
-        }
-
-        else if (
-          event.key === "Escape"
-        ) {
-          clearCalculator();
-        }
-
-        else if (
-          event.key === "%"
-        ) {
-          percentage();
-        }
-
-      }
-    );
-
-
-    /* =========================================================
-       3D PANEL INTERACTION
-       ========================================================= */
-
-    const dashboard =
-      document.querySelector(
-        ".dashboard"
-      );
-
-    const panels =
-      document.querySelectorAll(
-        ".panel"
-      );
-
-
-    panels.forEach(panel => {
-
-      panel.addEventListener(
-        "click",
-        event => {
-
-          /*
-            Controls should remain usable.
-            The containing panel still becomes active.
-          */
-
-          const active =
-            panel.classList.contains(
-              "active"
-            );
-
-          panels.forEach(item => {
-            item.classList.remove(
-              "active"
-            );
-          });
-
-          if (active) {
-
-            dashboard.classList.remove(
-              "has-active"
-            );
-
-          } else {
-
-            panel.classList.add(
-              "active"
-            );
-
-            dashboard.classList.add(
-              "has-active"
-            );
-
-          }
-
-        }
-      );
 
     });
 
 
-    /* =========================================================
-       ESCAPE = RETURN TO FLAT DASHBOARD
-       ========================================================= */
+    /* =========================
+       SCROLL REVEAL
+    ========================== */
 
-    document.addEventListener(
-      "keydown",
-      event => {
+    const observer = new IntersectionObserver(
+        entries => {
 
-        if (
-          event.key === "Escape"
-        ) {
+            entries.forEach(entry => {
 
-          panels.forEach(panel => {
-            panel.classList.remove(
-              "active"
-            );
-          });
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target);
+                }
 
-          dashboard.classList.remove(
-            "has-active"
-          );
+            });
 
+        },
+        {
+            threshold: 0.12
         }
-
-      }
     );
 
 
-    /* =========================================================
-       INITIALIZE
-       ========================================================= */
+    document.querySelectorAll(".reveal").forEach(element => {
+        observer.observe(element);
+    });
 
-    updateLocalClock();
-    updateWorldClocks();
 
-    setInterval(
-      updateLocalClock,
-      1000
-    );
+    /* =========================
+       CURRENT YEAR
+    ========================== */
 
-    setInterval(
-      updateWorldClocks,
-      1000
-    );
+    const yearElement = document.querySelector("footer span");
 
-  </script>
+    if (yearElement) {
+        yearElement.textContent =
+            `© ${new Date().getFullYear()} Decoder`;
+    }
+
+</script>
 
 </body>
 </html>
