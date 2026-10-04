@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetTrace — Real Traceroute</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#070b12',
+                        darkPanel: '#0d131d',
+                        darkPanel2: '#111925',
+                        darkBorder: '#202b3a',
+                        accent: '#54d6ff',
+                        success: '#52e09a',
+                        danger: '#ff6875',
+                        muted: '#8491a5',
+                    }
+                }
+            }
+        };
+    </script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-[#070b12] text-[#e8edf5] min-h-screen antialiased">
+
+<header class="sticky top-0 z-40 bg-[#090e16]/95 backdrop-blur border-b border-[#202b3a] px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+        <div class="w-9 h-9 grid place-items-center rounded-lg bg-[#54d6ff] text-[#001018] font-extrabold text-sm shadow-md shadow-[#54d6ff]/20">
+            NT
+        </div>
+        <div>
+            <strong class="block text-sm font-semibold tracking-wide">NetTrace</strong>
+            <span class="block text-xs text-[#8491a5]">Real Network Diagnostics</span>
+        </div>
+    </div>
+
+    <div id="status" class="status idle text-xs px-3 py-1 rounded-full border border-[#202b3a] font-mono">
+        Ready
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto p-4 md:p-6 grid gap-5">
+
+    <!-- Control Panel -->
+    <section class="bg-[#0d131d] border border-[#202b3a] rounded-xl p-5 shadow-xl">
+        <div class="flex flex-col sm:flex-row gap-3">
+            <input
+                id="targetInput"
+                type="text"
+                value="google.com"
+                placeholder="Enter domain or IP"
+                autocomplete="off"
+                class="flex-1 bg-[#111925] border border-[#202b3a] rounded-lg px-4 py-2.5 text-sm text-[#e8edf5] placeholder-[#8491a5] focus:outline-none focus:border-[#54d6ff] focus:ring-1 focus:ring-[#54d6ff] transition"
+            >
+            <button
+                id="traceButton"
+                class="px-6 py-2.5 bg-[#54d6ff] hover:bg-[#38c9f5] text-[#001018] font-bold text-sm rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[#54d6ff]/10"
+            >
+                Trace Route
+            </button>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-[#202b3a]/60 text-xs text-[#8491a5] quick-targets">
+            <span class="mr-1">Quick targets:</span>
+            <button data-target="google.com" class="px-3 py-1.5 rounded-md bg-[#111925] hover:bg-[#1a2536] text-[#8491a5] hover:text-[#e8edf5] border border-[#202b3a] transition">
+                Google
+            </button>
+            <button data-target="github.com" class="px-3 py-1.5 rounded-md bg-[#111925] hover:bg-[#1a2536] text-[#8491a5] hover:text-[#e8edf5] border border-[#202b3a] transition">
+                GitHub
+            </button>
+            <button data-target="cloudflare.com" class="px-3 py-1.5 rounded-md bg-[#111925] hover:bg-[#1a2536] text-[#8491a5] hover:text-[#e8edf5] border border-[#202b3a] transition">
+                Cloudflare
+            </button>
+            <button data-target="1.1.1.1" class="px-3 py-1.5 rounded-md bg-[#111925] hover:bg-[#1a2536] text-[#8491a5] hover:text-[#e8edf5] border border-[#202b3a] transition">
+                1.1.1.1
+            </button>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="grid grid-cols-2 md:grid-cols-4 bg-[#0d131d] border border-[#202b3a] rounded-xl overflow-hidden shadow-xl divide-y md:divide-y-0 md:divide-x divide-[#202b3a]">
+        <div class="p-4 flex flex-col">
+            <span class="text-xs uppercase tracking-wider text-[#8491a5]">Target</span>
+            <strong id="targetValue" class="text-base text-[#e8edf5] font-semibold mt-1 truncate">—</strong>
+        </div>
+        <div class="p-4 flex flex-col">
+            <span class="text-xs uppercase tracking-wider text-[#8491a5]">Resolved IP</span>
+            <strong id="resolvedValue" class="text-base text-[#e8edf5] font-semibold mt-1 font-mono truncate">—</strong>
+        </div>
+        <div class="p-4 flex flex-col">
+            <span class="text-xs uppercase tracking-wider text-[#8491a5]">Hops</span>
+            <strong id="hopCount" class="text-base text-[#54d6ff] font-bold mt-1">0</strong>
+        </div>
+        <div class="p-4 flex flex-col">
+            <span class="text-xs uppercase tracking-wider text-[#8491a5]">Last RTT</span>
+            <strong id="lastLatency" class="text-base text-[#e8edf5] font-semibold mt-1 font-mono truncate">—</strong>
+        </div>
+    </section>
+
+    <!-- Map Panel -->
+    <section class="relative h-[440px] md:h-[520px] bg-[#0d131d] border border-[#202b3a] rounded-xl overflow-hidden shadow-xl">
+        <div id="map" class="w-full h-full"></div>
+
+        <div class="absolute z-[500] top-4 right-4 bg-[#070b12]/90 backdrop-blur border border-[#202b3a] rounded-lg p-3 text-xs shadow-xl flex flex-col gap-1.5">
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-gray-400"></span>
+                <span>Local / private</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#54d6ff]"></span>
+                <span>Geolocated hop</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#ff6875]"></span>
+                <span>Timeout</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Route Panel -->
+    <section class="bg-[#0d131d] border border-[#202b3a] rounded-xl overflow-hidden shadow-xl">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-[#202b3a] bg-[#111925]/60">
+            <h2 class="text-sm font-semibold tracking-wide">Live Route</h2>
+            <span id="measurementSource" class="text-xs text-[#8491a5]">
+                Measuring from this backend
+            </span>
+        </div>
+
+        <div id="routeList" class="route-list max-h-[420px] overflow-y-auto divide-y divide-[#202b3a]/50">
+            <div class="empty p-8 text-center text-sm text-[#8491a5]">
+                Enter a target and start a trace.
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
