@@ -6,37 +6,157 @@
   <meta name="theme-color" content="#080b10">
   <title>World Utility Console</title>
 
-  <!-- Twind: Lightweight Tailwind-in-JS (13KB) -->
-  <script src="https://cdn.jsdelivr.net/npm/twind@0.16.19/twind.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/twind@0.16.19/shim/shim.umd.js"></script>
-  <script>
-    twind.setup({
-      theme: {
-        extend: {
-          colors: {
-            bg: '#080b10',
-            panel: '#0e131a',
-            panel2: '#111821',
-            line: '#25303c',
-            lineSoft: '#1a232d',
-            textMain: '#edf2f7',
-            muted: '#7f8b98',
-            accent: '#5fd3ff',
-            green: '#79d99b',
-            danger: '#ff7676',
-          }
-        }
-      }
-    });
-  </script>
-
   <style>
-    /* 3D Perspective & Depth Effects */
+    /* =========================================================
+       CSS VARIABLES & RESET (100% SELF-CONTAINED PURE CSS)
+       ========================================================= */
+    :root {
+      --bg: #080b10;
+      --panel: #0e131a;
+      --panel-elevated: #131a24;
+      --card: #0b1016;
+      --line: #25303c;
+      --line-soft: #1a232d;
+      --text: #edf2f7;
+      --muted: #7f8b98;
+      --accent: #5fd3ff;
+      --accent-soft: rgba(95, 211, 255, 0.12);
+      --green: #79d99b;
+      --danger: #ff7676;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 50% 0%, #131c26 0%, transparent 48%),
+        var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* =========================================================
+       HEADER NAVIGATION
+       ========================================================= */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 48px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(14, 19, 26, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+      border-color: rgba(95, 211, 255, 0.3);
+      background: var(--accent-soft);
+    }
+
+    .topbar-divider {
+      color: var(--line);
+      font-size: 14px;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--green);
+    }
+
+    .dot-green {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(121, 217, 155, 0.8);
+      animation: pulse 2.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.9); }
+    }
+
+    /* =========================================================
+       DASHBOARD GRID & 3D PERSPECTIVE
+       ========================================================= */
     .dashboard {
+      width: 100%;
+      height: calc(100vh - 48px);
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 14px;
       perspective: 1600px;
+      box-sizing: border-box;
     }
 
     .panel {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
       transform-style: preserve-3d;
       will-change: transform, opacity, filter;
       transition: transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1),
@@ -44,6 +164,7 @@
                   filter 0.45s ease,
                   box-shadow 0.45s ease,
                   border-color 0.3s ease;
+      cursor: pointer;
     }
 
     .panel:hover:not(.active) {
@@ -53,20 +174,19 @@
 
     .panel.active {
       z-index: 50;
-      transform: translate3d(0, 0, 80px) scale(1.03);
-      border-color: rgba(95, 211, 255, 0.68);
-      box-shadow: 0 35px 70px rgba(0, 0, 0, 0.7),
-                  0 0 30px rgba(95, 211, 255, 0.12);
+      transform: translate3d(0, 0, 75px) scale(1.025);
+      border-color: rgba(95, 211, 255, 0.7);
+      box-shadow: 0 35px 70px rgba(0, 0, 0, 0.75), 0 0 35px rgba(95, 211, 255, 0.12);
       filter: brightness(1.06);
     }
 
     .dashboard.has-active .panel:not(.active) {
-      transform: translate3d(0, 0, -30px) scale(0.98);
+      transform: translate3d(0, 0, -25px) scale(0.98);
       opacity: 0.55;
       filter: brightness(0.7);
     }
 
-    /* Subtle panel scan texture */
+    /* Subtle Scanline Overlay */
     .panel::after {
       content: "";
       position: absolute;
@@ -74,11 +194,11 @@
       pointer-events: none;
       background: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px);
       background-size: 100% 32px;
-      opacity: 0.2;
+      opacity: 0.18;
       mask-image: linear-gradient(to bottom, black, transparent);
     }
 
-    /* Corner accents */
+    /* Corner Accents */
     .corner {
       position: absolute;
       width: 8px;
@@ -86,110 +206,434 @@
       pointer-events: none;
       z-index: 10;
       opacity: 0.7;
-      border-color: #5fd3ff;
+      border-color: var(--accent);
     }
     .corner.tl { top: -1px; left: -1px; border-top: 1.5px solid; border-left: 1.5px solid; }
     .corner.br { bottom: -1px; right: -1px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
 
-    /* SVG Map Styling */
-    .graticule { stroke: rgba(127, 139, 152, 0.15); stroke-width: 0.6; fill: none; }
-    .land { fill: #17202a; stroke: #2a3744; stroke-width: 1; }
-    .india-marker { fill: #5fd3ff; filter: drop-shadow(0 0 6px rgba(95, 211, 255, 0.9)); }
-    .map-label { font-size: 9px; fill: #596673; letter-spacing: 1px; font-family: monospace; }
+    /* Panel Headers */
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 5;
+      margin-bottom: 8px;
+    }
 
+    .panel-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 10px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .panel-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+
+    /* Panel Footers */
+    .panel-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 5;
+      padding-top: 12px;
+      border-top: 1px solid var(--line-soft);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #56616d;
+    }
+
+    /* =========================================================
+       PANEL 1: CLOCK
+       ========================================================= */
+    .clock-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex: 1;
+      position: relative;
+      z-index: 5;
+      margin: auto 0;
+    }
+
+    .clock-time {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: clamp(48px, 6.5vw, 88px);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -2px;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 24px rgba(95, 211, 255, 0.08);
+    }
+
+    .clock-zone {
+      margin-top: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .clock-date {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .clock-location {
+      margin-top: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      color: #aab4bf;
+    }
+
+    /* =========================================================
+       PANEL 2: WORLD MAP
+       ========================================================= */
+    .map-container {
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      background:
+        linear-gradient(rgba(95, 211, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(95, 211, 255, 0.025) 1px, transparent 1px),
+        var(--card);
+      background-size: 28px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-container svg {
+      width: 100%;
+      height: 100%;
+      max-height: 250px;
+    }
+
+    .graticule { stroke: rgba(127, 139, 152, 0.14); stroke-width: 0.6; fill: none; }
+    .land { fill: #18222b; stroke: #2d3b48; stroke-width: 1; }
+    .india-marker { fill: var(--accent); filter: drop-shadow(0 0 6px rgba(95, 211, 255, 0.9)); }
+    .map-label { font-size: 9px; fill: #596673; letter-spacing: 1px; font-family: ui-monospace, monospace; }
+
+    /* =========================================================
+       PANEL 3: CALCULATOR
+       ========================================================= */
+    .calc-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      z-index: 5;
+    }
+
+    .calc-display {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      text-align: right;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 26px;
+      font-weight: 300;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      overflow-x: auto;
+      margin-bottom: 10px;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .calc-keys {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      flex: 1;
+    }
+
+    .calc-btn {
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: #111821;
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0;
+      transition: all 0.15s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .calc-btn:hover {
+      background: #192330;
+      border-color: #2b3947;
+      color: #fff;
+    }
+
+    .calc-btn:active {
+      transform: scale(0.96);
+    }
+
+    .calc-btn.op {
+      background: #0d202d;
+      border-color: #173447;
+      color: var(--accent);
+      font-size: 16px;
+    }
+
+    .calc-btn.op:hover {
+      background: #143044;
+      border-color: #224761;
+    }
+
+    .calc-btn.clear {
+      background: #251515;
+      border-color: #3b2020;
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    .calc-btn.clear:hover {
+      background: #331c1c;
+      border-color: #4f2828;
+    }
+
+    .calc-btn.equals {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #080b10;
+      font-weight: 700;
+      box-shadow: 0 0 12px rgba(95, 211, 255, 0.2);
+    }
+
+    .calc-btn.equals:hover {
+      background: #4ac9f5;
+      border-color: #4ac9f5;
+    }
+
+    .calc-btn.zero {
+      grid-column: span 2;
+    }
+
+    /* =========================================================
+       PANEL 4: WORLD CLOCKS
+       ========================================================= */
+    .world-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      flex: 1;
+      position: relative;
+      z-index: 5;
+    }
+
+    .city-card {
+      background: var(--card);
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .city-card:hover {
+      border-color: #2c3a49;
+      transform: translateY(-2px);
+    }
+
+    .city-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .city-name {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--text);
+    }
+
+    .city-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 9px;
+      color: var(--muted);
+      background: #111821;
+      padding: 2px 5px;
+      border-radius: 4px;
+      border: 1px solid var(--line-soft);
+    }
+
+    .city-time {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: clamp(18px, 2vw, 24px);
+      font-weight: 300;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      margin: 4px 0;
+    }
+
+    .city-date {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* =========================================================
+       RESPONSIVE ADAPTATIONS
+       ========================================================= */
     @media (max-width: 1024px) {
-      .dashboard { perspective: none; }
+      body {
+        overflow-y: auto;
+      }
+
+      .dashboard {
+        height: auto;
+        min-height: calc(100vh - 48px);
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        perspective: none;
+      }
+
+      .panel {
+        min-height: 320px;
+      }
+
       .panel:hover:not(.active),
       .panel.active,
-      .dashboard.has-active .panel:not(.active) { transform: none; }
+      .dashboard.has-active .panel:not(.active) {
+        transform: none;
+      }
+
+      .dashboard.has-active .panel:not(.active) {
+        opacity: 0.75;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dashboard {
+        padding: 10px;
+        gap: 10px;
+      }
+
+      .panel {
+        padding: 14px;
+      }
+
+      .clock-time {
+        font-size: 42px;
+      }
+
+      .world-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 
-<body class="bg-[#080b10] text-[#edf2f7] min-h-screen flex flex-col font-sans selection:bg-[#5fd3ff] selection:text-black">
+<body>
 
-  <!-- Top Navigation Bar -->
-  <header class="flex items-center justify-between px-6 py-3 border-b border-[#25303c]/60 bg-[#0e131a]/90 backdrop-blur z-30">
-    <div class="flex items-center gap-3">
-      <a href="index.html" class="flex items-center gap-1.5 text-xs font-mono text-[#7f8b98] hover:text-[#5fd3ff] transition">
+  <!-- Top Navigation Header -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <a href="index.html" class="back-link">
         <span>←</span>
         <span>Portfolio</span>
       </a>
-      <span class="text-[#25303c]">/</span>
-      <div class="flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-[#79d99b] shadow-[0_0_8px_rgba(121,217,155,0.8)]"></span>
-        <span class="text-xs font-mono uppercase tracking-widest text-[#edf2f7] font-semibold">World Utility Console</span>
+      <span class="topbar-divider">/</span>
+      <div class="brand-title">
+        <span>World Utility Console</span>
       </div>
     </div>
 
-    <div class="flex items-center gap-3">
-      <span class="text-[11px] font-mono text-[#7f8b98] border border-[#25303c] rounded px-2 py-0.5 bg-[#111821]">Twind CSS (13KB)</span>
+    <div class="status-badge">
+      <span class="dot-green"></span>
+      <span>System Operational</span>
     </div>
   </header>
 
-  <!-- 3D Console Dashboard Grid -->
-  <main class="dashboard grid grid-cols-1 lg:grid-cols-2 gap-4 p-4 flex-1 h-auto lg:h-[calc(100vh-49px)] box-border">
+  <!-- 3D Console Dashboard -->
+  <main class="dashboard">
 
     <!-- =====================================================
          1. LOCAL CLOCK
          ===================================================== -->
-    <section class="panel clock-panel relative min-w-0 min-h-[340px] p-6 rounded-2xl bg-[#0e131a] border border-[#25303c] overflow-hidden flex flex-col justify-between shadow-xl">
+    <section class="panel clock-panel">
       <span class="corner tl"></span>
       <span class="corner br"></span>
 
-      <!-- Panel Header -->
-      <div class="flex items-center justify-between mb-4 relative z-10">
-        <span class="text-[10px] uppercase tracking-widest text-[#7f8b98] font-mono font-semibold">Local Time</span>
-        <div class="flex items-center gap-1.5 text-[10px] font-mono text-[#79d99b] uppercase tracking-wider">
-          <span class="w-1.5 h-1.5 rounded-full bg-[#79d99b] shadow-[0_0_6px_#79d99b]"></span>
-          System Online
+      <div class="panel-header">
+        <span class="panel-label">Local Time</span>
+        <div class="panel-status">
+          <span class="dot-green"></span>
+          <span>Online</span>
         </div>
       </div>
 
-      <!-- Clock Display -->
-      <div class="flex flex-col items-center justify-center flex-1 text-center relative z-10 my-auto py-2">
-        <div id="clock" class="text-6xl sm:text-7xl lg:text-8xl font-light font-mono tracking-tight text-[#edf2f7] tabular-nums">
-          00:00:00
-        </div>
-        <div id="clockUnit" class="text-xs uppercase tracking-widest text-[#5fd3ff] font-mono font-medium mt-3">
-          India Standard Time
-        </div>
-        <div id="date" class="text-sm text-[#7f8b98] mt-2 font-medium">
-          Loading...
-        </div>
-        <div id="location" class="text-xs text-[#aab4bf] mt-1 font-mono">
-          Gorakhpur · Uttar Pradesh · India
-        </div>
+      <div class="clock-display">
+        <div id="clock" class="clock-time">00:00:00</div>
+        <div id="clockUnit" class="clock-zone">India Standard Time</div>
+        <div id="date" class="clock-date">Loading...</div>
+        <div id="location" class="clock-location">Gorakhpur · Uttar Pradesh · India</div>
       </div>
 
-      <!-- Clock Meta Footer -->
-      <div class="flex items-center gap-4 text-[10px] font-mono uppercase tracking-wider text-[#56616d] pt-3 border-t border-[#1a232d] relative z-10">
+      <div class="panel-footer">
         <span>LOCAL</span>
         <span>24 HOUR</span>
-        <span id="utcOffset" class="text-[#7f8b98] ml-auto">UTC+05:30</span>
+        <span id="utcOffset" style="color: var(--text);">UTC+05:30</span>
       </div>
     </section>
 
     <!-- =====================================================
          2. WORLD MAP
          ===================================================== -->
-    <section class="panel map-panel relative min-w-0 min-h-[340px] p-6 rounded-2xl bg-[#0e131a] border border-[#25303c] overflow-hidden flex flex-col justify-between shadow-xl">
+    <section class="panel map-panel">
       <span class="corner tl"></span>
       <span class="corner br"></span>
 
-      <!-- Panel Header -->
-      <div class="flex items-center justify-between mb-3 relative z-10">
-        <span class="text-[10px] uppercase tracking-widest text-[#7f8b98] font-mono font-semibold">Global View</span>
-        <div class="flex items-center gap-1.5 text-[10px] font-mono text-[#5fd3ff] uppercase tracking-wider">
-          <span class="w-1.5 h-1.5 rounded-full bg-[#5fd3ff] shadow-[0_0_6px_#5fd3ff]"></span>
-          Live Position
+      <div class="panel-header">
+        <span class="panel-label">Global View</span>
+        <div class="panel-status" style="color: var(--accent);">
+          <span class="dot-green" style="background: var(--accent); box-shadow: 0 0 8px rgba(95,211,255,0.8);"></span>
+          <span>Live Position</span>
         </div>
       </div>
 
-      <!-- SVG Map Wrapper -->
-      <div class="flex-1 w-full rounded-xl border border-[#1a232d] bg-[#0b1016] p-3 relative overflow-hidden flex items-center justify-center">
-        <svg viewBox="0 0 1000 500" class="w-full h-full max-h-[280px]" aria-label="World map">
-          <!-- Grid -->
+      <div class="map-container">
+        <svg viewBox="0 0 1000 500" aria-label="World map">
+          <!-- Graticules -->
           <path class="graticule" d="M0 125 H1000" />
           <path class="graticule" d="M0 250 H1000" />
           <path class="graticule" d="M0 375 H1000" />
@@ -226,8 +670,7 @@
         </svg>
       </div>
 
-      <!-- Map Footer -->
-      <div class="flex items-center justify-between text-[10px] font-mono text-[#56616d] pt-3 border-t border-[#1a232d] relative z-10">
+      <div class="panel-footer">
         <span>INDIA · 26.76°N 83.37°E</span>
         <span>WORLD GRID</span>
       </div>
@@ -236,48 +679,42 @@
     <!-- =====================================================
          3. CALCULATOR
          ===================================================== -->
-    <section class="panel relative min-w-0 min-h-[340px] p-6 rounded-2xl bg-[#0e131a] border border-[#25303c] overflow-hidden flex flex-col justify-between shadow-xl">
+    <section class="panel">
       <span class="corner tl"></span>
       <span class="corner br"></span>
 
-      <!-- Panel Header -->
-      <div class="flex items-center justify-between mb-3 relative z-10">
-        <span class="text-[10px] uppercase tracking-widest text-[#7f8b98] font-mono font-semibold">Calculator</span>
-        <span class="text-[10px] font-mono text-[#7f8b98] uppercase tracking-wider">Standard Arithmetic</span>
+      <div class="panel-header">
+        <span class="panel-label">Calculator</span>
+        <span class="panel-label" style="color: var(--muted);">Standard Arithmetic</span>
       </div>
 
-      <!-- Calculator Body -->
-      <div class="flex flex-col flex-1 justify-between relative z-10">
-        <!-- Display -->
-        <div id="display" class="w-full bg-[#080b10] border border-[#25303c] rounded-xl px-4 py-3 text-right font-mono text-3xl font-light text-[#edf2f7] overflow-x-auto tabular-nums shadow-inner mb-3">
-          0
-        </div>
+      <div class="calc-wrap">
+        <div id="display" class="calc-display">0</div>
 
-        <!-- Keys Grid -->
-        <div class="grid grid-cols-4 gap-2 flex-1">
-          <button type="button" onclick="clearCalculator()" class="rounded-lg bg-[#251515] hover:bg-[#331c1c] text-[#ff7676] font-mono font-semibold text-sm py-2.5 transition active:scale-95 border border-[#3d2020]">C</button>
-          <button type="button" onclick="backspace()" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-sm py-2.5 transition active:scale-95 border border-[#1a232d]">⌫</button>
-          <button type="button" onclick="percentage()" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-sm py-2.5 transition active:scale-95 border border-[#1a232d]">%</button>
-          <button type="button" onclick="setOperator('/')" class="rounded-lg bg-[#0e2230] hover:bg-[#143247] text-[#5fd3ff] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a354a]">÷</button>
+        <div class="calc-keys">
+          <button type="button" onclick="clearCalculator()" class="calc-btn clear">C</button>
+          <button type="button" onclick="backspace()" class="calc-btn">⌫</button>
+          <button type="button" onclick="percentage()" class="calc-btn">%</button>
+          <button type="button" onclick="setOperator('/')" class="calc-btn op">÷</button>
 
-          <button type="button" onclick="number('7')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">7</button>
-          <button type="button" onclick="number('8')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">8</button>
-          <button type="button" onclick="number('9')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">9</button>
-          <button type="button" onclick="setOperator('*')" class="rounded-lg bg-[#0e2230] hover:bg-[#143247] text-[#5fd3ff] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a354a]">×</button>
+          <button type="button" onclick="number('7')" class="calc-btn">7</button>
+          <button type="button" onclick="number('8')" class="calc-btn">8</button>
+          <button type="button" onclick="number('9')" class="calc-btn">9</button>
+          <button type="button" onclick="setOperator('*')" class="calc-btn op">×</button>
 
-          <button type="button" onclick="number('4')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">4</button>
-          <button type="button" onclick="number('5')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">5</button>
-          <button type="button" onclick="number('6')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">6</button>
-          <button type="button" onclick="setOperator('-')" class="rounded-lg bg-[#0e2230] hover:bg-[#143247] text-[#5fd3ff] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a354a]">−</button>
+          <button type="button" onclick="number('4')" class="calc-btn">4</button>
+          <button type="button" onclick="number('5')" class="calc-btn">5</button>
+          <button type="button" onclick="number('6')" class="calc-btn">6</button>
+          <button type="button" onclick="setOperator('-')" class="calc-btn op">−</button>
 
-          <button type="button" onclick="number('1')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">1</button>
-          <button type="button" onclick="number('2')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">2</button>
-          <button type="button" onclick="number('3')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">3</button>
-          <button type="button" onclick="setOperator('+')" class="rounded-lg bg-[#0e2230] hover:bg-[#143247] text-[#5fd3ff] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a354a]">+</button>
+          <button type="button" onclick="number('1')" class="calc-btn">1</button>
+          <button type="button" onclick="number('2')" class="calc-btn">2</button>
+          <button type="button" onclick="number('3')" class="calc-btn">3</button>
+          <button type="button" onclick="setOperator('+')" class="calc-btn op">+</button>
 
-          <button type="button" onclick="number('0')" class="col-span-2 rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">0</button>
-          <button type="button" onclick="decimal()" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">.</button>
-          <button type="button" onclick="calculate()" class="rounded-lg bg-[#5fd3ff] hover:bg-[#4bc0ec] text-[#080b10] font-mono font-bold text-base py-2.5 transition active:scale-95 shadow-md shadow-[#5fd3ff]/10">=</button>
+          <button type="button" onclick="number('0')" class="calc-btn zero">0</button>
+          <button type="button" onclick="decimal()" class="calc-btn">.</button>
+          <button type="button" onclick="calculate()" class="calc-btn equals">=</button>
         </div>
       </div>
     </section>
@@ -285,59 +722,57 @@
     <!-- =====================================================
          4. WORLD CLOCKS
          ===================================================== -->
-    <section class="panel relative min-w-0 min-h-[340px] p-6 rounded-2xl bg-[#0e131a] border border-[#25303c] overflow-hidden flex flex-col justify-between shadow-xl">
+    <section class="panel">
       <span class="corner tl"></span>
       <span class="corner br"></span>
 
-      <!-- Panel Header -->
-      <div class="flex items-center justify-between mb-3 relative z-10">
-        <span class="text-[10px] uppercase tracking-widest text-[#7f8b98] font-mono font-semibold">World Time</span>
-        <div class="flex items-center gap-1.5 text-[10px] font-mono text-[#79d99b] uppercase tracking-wider">
-          <span class="w-1.5 h-1.5 rounded-full bg-[#79d99b] shadow-[0_0_6px_#79d99b]"></span>
-          Synchronized
+      <div class="panel-header">
+        <span class="panel-label">World Time</span>
+        <div class="panel-status">
+          <span class="dot-green"></span>
+          <span>Synchronized</span>
         </div>
       </div>
 
-      <!-- World Clocks Grid -->
-      <div class="grid grid-cols-2 gap-3 flex-1 relative z-10">
+      <div class="world-grid">
         <!-- New York -->
-        <article class="bg-[#0b1016] border border-[#1a232d] hover:border-[#25303c] rounded-xl p-3.5 flex flex-col justify-between transition">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-mono font-semibold tracking-wider text-[#edf2f7]">NEW YORK</span>
-            <span class="text-[10px] font-mono text-[#7f8b98] bg-[#111821] px-1.5 py-0.5 rounded">EDT</span>
+        <article class="city-card">
+          <div class="city-top">
+            <span class="city-name">NEW YORK</span>
+            <span class="city-code">EDT</span>
           </div>
-          <div id="newYork" class="text-2xl font-light font-mono text-[#edf2f7] tabular-nums my-1">--:--:--</div>
-          <div id="newYorkDate" class="text-[11px] font-mono text-[#7f8b98]">---</div>
+          <div id="newYork" class="city-time">--:--:--</div>
+          <div id="newYorkDate" class="city-date">---</div>
         </article>
 
         <!-- London -->
-        <article class="bg-[#0b1016] border border-[#1a232d] hover:border-[#25303c] rounded-xl p-3.5 flex flex-col justify-between transition">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-mono font-semibold tracking-wider text-[#edf2f7]">LONDON</span>
-            <span class="text-[10px] font-mono text-[#7f8b98] bg-[#111821] px-1.5 py-0.5 rounded">BST</span>
+        <article class="city-card">
+          <div class="city-top">
+            <span class="city-name">LONDON</span>
+            <span class="city-code">BST</span>
           </div>
-          <div id="london" class="text-2xl font-light font-mono text-[#edf2f7] tabular-nums my-1">--:--:--</div>
-          <div id="londonDate" class="text-[11px] font-mono text-[#7f8b98]">---</div>
+          <div id="london" class="city-time">--:--:--</div>
+          <div id="londonDate" class="city-date">---</div>
         </article>
 
         <!-- Dubai -->
-        <article class="bg-[#0b1016] border border-[#1a232d] hover:border-[#25303c] rounded-xl p-3.5 flex flex-col justify-between transition">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-mono font-semibold tracking-wider text-[#edf2f7]">DUBAI</span>
-            <span class="text-[10px] font-mono text-[#7f8b98] bg-[#111821] px-1.5 py-0.5 rounded">GST</span>
+        <article class="city-card">
+          <div class="city-top">
+            <span class="city-name">DUBAI</span>
+            <span class="city-code">GST</span>
           </div>
-          <div id="dubai" class="text-2xl font-light font-mono text-[#edf2f7] tabular-nums my-1">--:--:--</div>
-          <div id="dubaiDate" class="text-[11px] font-mono text-[#7f8b98]">---</div>
+          <div id="dubai" class="city-time">--:--:--</div>
+          <div id="dubaiDate" class="city-date">---</div>
         </article>
 
         <!-- Tokyo -->
-        <article class="bg-[#0b1016] border border-[#1a232d] hover:border-[#25303c] rounded-xl p-3.5 flex flex-col justify-between transition">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-mono font-semibold tracking-wider text-[#edf2f7]">TOKYO</span>
-            <span class="text-[10px] font-mono text-[#7f8b98] bg-[#111821] px-1.5 py-0.5 rounded">JST</span>
+        <article class="city-card">
+          <div class="city-top">
+            <span class="city-name">TOKYO</span>
+            <span class="city-code">JST</span>
           </div>
-          <div id="tokyo" class="text-2xl font-light font-mono text-[#edf2f7] tabular-nums my-1">--:--:--</div>
-          <div id="tokyoDate" class="text-[11px] font-mono text-[#7f8b98]">---</div>
+          <div id="tokyo" class="city-time">--:--:--</div>
+          <div id="tokyoDate" class="city-date">---</div>
         </article>
       </div>
     </section>
@@ -346,7 +781,7 @@
 
   <script>
     /* =========================================================
-       LOCAL CLOCK (OPTIMIZED)
+       LOCAL CLOCK
        ========================================================= */
 
     function updateLocalClock() {
@@ -392,7 +827,7 @@
 
 
     /* =========================================================
-       WORLD CLOCKS (PRE-INSTANTIATED FORMATTERS)
+       WORLD CLOCKS (REUSABLE FORMATTERS)
        ========================================================= */
 
     const cities = {
@@ -555,6 +990,7 @@
         const isControl = Boolean(event.target.closest("button, input, a"));
         const active = panel.classList.contains("active");
 
+        /* If user clicks a calculator button, keep the panel elevated and active */
         if (isControl) {
           if (!active) {
             panels.forEach(item => item.classList.remove("active"));
