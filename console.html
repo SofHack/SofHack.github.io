@@ -6,1381 +6,350 @@
   <meta name="theme-color" content="#080b10">
   <title>World Utility Console</title>
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Twind: Lightweight Tailwind-in-JS (13KB) -->
+  <script src="https://cdn.jsdelivr.net/npm/twind@0.16.19/twind.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/twind@0.16.19/shim/shim.umd.js"></script>
   <script>
-    tailwind.config = {
+    twind.setup({
       theme: {
         extend: {
           colors: {
-            consoleBg: '#080b10',
-            consolePanel: '#0e131a',
-            consolePanel2: '#111821',
-            consoleLine: '#25303c',
-            consoleLineSoft: '#1a232d',
-            consoleText: '#edf2f7',
-            consoleMuted: '#7f8b98',
-            consoleAccent: '#5fd3ff',
-            consoleGreen: '#79d99b',
-            consoleDanger: '#ff7676',
+            bg: '#080b10',
+            panel: '#0e131a',
+            panel2: '#111821',
+            line: '#25303c',
+            lineSoft: '#1a232d',
+            textMain: '#edf2f7',
+            muted: '#7f8b98',
+            accent: '#5fd3ff',
+            green: '#79d99b',
+            danger: '#ff7676',
           }
         }
       }
-    };
+    });
   </script>
 
   <style>
-    :root {
-      --bg: #080b10;
-      --panel: #0e131a;
-      --panel-2: #111821;
-      --line: #25303c;
-      --line-soft: #1a232d;
-      --text: #edf2f7;
-      --muted: #7f8b98;
-      --accent: #5fd3ff;
-      --accent-soft: rgba(95, 211, 255, 0.12);
-      --green: #79d99b;
-      --danger: #ff7676;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      overflow: hidden;
-    }
-
-    body {
-      background:
-        radial-gradient(
-          circle at 50% 0%,
-          #131c26 0%,
-          transparent 48%
-        ),
-        var(--bg);
-
-      color: var(--text);
-
-      font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-    }
-
-    /* =========================================================
-       DASHBOARD
-       ========================================================= */
-
+    /* 3D Perspective & Depth Effects */
     .dashboard {
-    	width: 100vw;
-    	height: 100vh;
-    	padding: 16px;
-    	box-sizing: border-box;
-
-    	display: grid;
-    	grid-template-columns: repeat(2, 1fr);
-    	grid-template-rows: repeat(2, 1fr);
-    	gap: 12px;
-
-    	perspective: 1600px;
-     }
-
-    /* =========================================================
-       PANEL
-       ========================================================= */
+      perspective: 1600px;
+    }
 
     .panel {
-    position: relative;
-    min-width: 0;
-    min-height: 0;
-
-    margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
-
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-
-    overflow: hidden;
-
-    transition:
-        transform 0.65s cubic-bezier(.2,.8,.2,1),
-        opacity 0.45s ease,
-        filter 0.45s ease,
-        box-shadow 0.45s ease;
-
-    transform-style: preserve-3d;
-    will-change: transform;
-	}
-
-    /* Subtle panel scan/grid texture */
-
-    .panel::after {
-      content: "";
-
-      position: absolute;
-      inset: 0;
-
-      pointer-events: none;
-
-      background:
-        linear-gradient(
-          rgba(255, 255, 255, 0.018) 1px,
-          transparent 1px
-        );
-
-      background-size: 100% 36px;
-
-      opacity: 0.18;
-
-      mask-image:
-        linear-gradient(
-          to bottom,
-          black,
-          transparent
-        );
+      transform-style: preserve-3d;
+      will-change: transform, opacity, filter;
+      transition: transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1),
+                  opacity 0.45s ease,
+                  filter 0.45s ease,
+                  box-shadow 0.45s ease,
+                  border-color 0.3s ease;
     }
 
-    /* =========================================================
-       3D INTERACTION
-       ========================================================= */
-
     .panel:hover:not(.active) {
-      transform:
-        translate3d(0, 0, 14px)
-        scale(1.008);
-
+      transform: translate3d(0, 0, 16px) scale(1.008);
       border-color: #31404d;
     }
 
     .panel.active {
       z-index: 50;
-
-      transform:
-        translate3d(0, 0, 100px)
-        scale(1.045);
-
-      border-color:
-        rgba(95, 211, 255, 0.68);
-
-      box-shadow:
-        0 42px 85px rgba(0, 0, 0, 0.68),
-        0 0 35px rgba(95, 211, 255, 0.11),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
-
-      filter: brightness(1.08);
+      transform: translate3d(0, 0, 80px) scale(1.03);
+      border-color: rgba(95, 211, 255, 0.68);
+      box-shadow: 0 35px 70px rgba(0, 0, 0, 0.7),
+                  0 0 30px rgba(95, 211, 255, 0.12);
+      filter: brightness(1.06);
     }
 
     .dashboard.has-active .panel:not(.active) {
-      transform:
-        translate3d(0, 0, -38px)
-        scale(0.975);
-
-      opacity: 0.58;
-      filter: brightness(0.72);
+      transform: translate3d(0, 0, -30px) scale(0.98);
+      opacity: 0.55;
+      filter: brightness(0.7);
     }
 
-    .panel.active::before {
+    /* Subtle panel scan texture */
+    .panel::after {
       content: "";
-
-      position: absolute;
-      inset: -1px;
-
-      border-radius: inherit;
-
-      pointer-events: none;
-
-      box-shadow:
-        0 0 0 1px rgba(95, 211, 255, 0.08),
-        0 0 40px rgba(95, 211, 255, 0.08);
-
-      z-index: 30;
-    }
-
-    /* =========================================================
-       PANEL HEADER
-       ========================================================= */
-
-    .panel-header {
-      position: relative;
-      z-index: 5;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      margin-bottom: 18px;
-    }
-
-    .label {
-      font-size: 10px;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-
-      font-size: 10px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-
-      color: var(--muted);
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-
-      border-radius: 50%;
-
-      background: var(--green);
-
-      box-shadow:
-        0 0 8px rgba(121, 217, 155, 0.7);
-    }
-
-    /* =========================================================
-       CORNER MARKERS
-       ========================================================= */
-
-    .corner {
-      position: absolute;
-
-      width: 8px;
-      height: 8px;
-
-      border-color: var(--accent);
-
-      opacity: 0.7;
-
-      z-index: 10;
-
-      pointer-events: none;
-    }
-
-    .corner.tl {
-      top: -1px;
-      left: -1px;
-
-      border-top: 1px solid;
-      border-left: 1px solid;
-    }
-
-    .corner.br {
-      right: -1px;
-      bottom: -1px;
-
-      border-right: 1px solid;
-      border-bottom: 1px solid;
-    }
-
-    /* =========================================================
-       CLOCK
-       ========================================================= */
-
-    .clock-panel {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .clock-content {
-      position: relative;
-      z-index: 5;
-
-      flex: 1;
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-
-      text-align: center;
-    }
-
-    .clock {
-      font-size: clamp(56px, 8vw, 106px);
-
-      font-weight: 300;
-
-      line-height: 1;
-
-      letter-spacing: -4px;
-
-      font-variant-numeric: tabular-nums;
-
-      text-shadow:
-        0 0 20px rgba(95, 211, 255, 0.04);
-    }
-
-    .clock-unit {
-      margin-top: 12px;
-
-      font-size: 10px;
-      letter-spacing: 3px;
-
-      text-transform: uppercase;
-
-      color: var(--accent);
-    }
-
-    .date {
-      margin-top: 14px;
-
-      font-size: 13px;
-
-      color: var(--muted);
-    }
-
-    .location {
-      margin-top: 7px;
-
-      font-size: 11px;
-
-      color: #aab4bf;
-    }
-
-    .clock-meta {
-      position: absolute;
-
-      left: 18px;
-      bottom: 16px;
-
-      display: flex;
-      gap: 16px;
-
-      font-size: 9px;
-
-      letter-spacing: 1px;
-
-      text-transform: uppercase;
-
-      color: #56616d;
-
-      z-index: 5;
-    }
-
-    /* =========================================================
-       WORLD MAP
-       ========================================================= */
-
-    .map-panel {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .map-wrap {
-      position: relative;
-      z-index: 5;
-
-      flex: 1;
-      min-height: 0;
-
-      border: 1px solid var(--line-soft);
-
-      border-radius: 10px;
-
-      overflow: hidden;
-
-      background:
-        linear-gradient(
-          rgba(95, 211, 255, 0.025) 1px,
-          transparent 1px
-        ),
-        linear-gradient(
-          90deg,
-          rgba(95, 211, 255, 0.025) 1px,
-          transparent 1px
-        ),
-        #0b1016;
-
-      background-size: 32px 32px;
-    }
-
-    .map-wrap::before {
-      content: "";
-
       position: absolute;
       inset: 0;
-
-      background:
-        radial-gradient(
-          circle at 65% 48%,
-          rgba(95, 211, 255, 0.09),
-          transparent 28%
-        );
-
       pointer-events: none;
+      background: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 100% 32px;
+      opacity: 0.2;
+      mask-image: linear-gradient(to bottom, black, transparent);
     }
 
-    .world-map {
-      width: 100%;
-      height: 100%;
-
-      padding: 18px;
-    }
-
-    .world-map svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    .graticule {
-      stroke: rgba(127, 139, 152, 0.12);
-      stroke-width: 0.6;
-
-      fill: none;
-    }
-
-    .land {
-      fill: #1b252e;
-
-      stroke: #35434f;
-      stroke-width: 1;
-    }
-
-    .india-marker {
-      fill: var(--accent);
-
-      filter:
-        drop-shadow(
-          0 0 6px
-          rgba(95, 211, 255, 0.8)
-        );
-    }
-
-    .map-label {
-      font-size: 9px;
-
-      fill: #596673;
-
-      letter-spacing: 1px;
-    }
-
-    .map-footer {
+    /* Corner accents */
+    .corner {
       position: absolute;
-
-      left: 28px;
-      right: 28px;
-      bottom: 16px;
-
-      display: flex;
-      justify-content: space-between;
-
-      font-size: 9px;
-
-      color: #5e6b77;
-
-      letter-spacing: 1px;
-
-      text-transform: uppercase;
-
-      z-index: 5;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+      z-index: 10;
+      opacity: 0.7;
+      border-color: #5fd3ff;
     }
-
-    /* =========================================================
-       CALCULATOR
-       ========================================================= */
-
-    .calculator {
-      position: relative;
-      z-index: 5;
-
-      width: min(100%, 420px);
-
-      height: calc(100% - 24px);
-
-      margin: 0 auto;
-
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .display {
-      height: 68px;
-
-      padding: 0 18px;
-
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-
-      border:
-        1px solid var(--line);
-
-      border-radius: 10px;
-
-      background: #090e14;
-
-      font-size: 34px;
-
-      font-weight: 300;
-
-      font-variant-numeric: tabular-nums;
-
-      overflow: hidden;
-    }
-
-    .calculator-subtitle {
-      height: 26px;
-
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-
-      font-size: 9px;
-
-      color: #56616d;
-
-      letter-spacing: 1px;
-
-      text-transform: uppercase;
-    }
-
-    .keys {
-      display: grid;
-
-      grid-template-columns:
-        repeat(4, 1fr);
-
-      gap: 7px;
-    }
-
-    .keys button {
-      height: 48px;
-
-      border:
-        1px solid var(--line);
-
-      border-radius: 8px;
-
-      background: var(--panel-2);
-
-      color: var(--text);
-
-      font-size: 16px;
-
-      font-weight: 400;
-
-      cursor: pointer;
-
-      transition:
-        background 0.15s ease,
-        border-color 0.15s ease,
-        transform 0.08s ease;
-    }
-
-    .keys button:hover {
-      background: #17212b;
-      border-color: #354553;
-    }
-
-    .keys button:active {
-      transform: scale(0.97);
-    }
-
-    .operator {
-      color: var(--accent) !important;
-    }
-
-    .clear {
-      color: var(--danger) !important;
-    }
-
-    .equals {
-      background: var(--accent) !important;
-
-      color: #061017 !important;
-
-      border-color:
-        var(--accent) !important;
-
-      font-weight: 600 !important;
-    }
-
-    /* =========================================================
-       WORLD CLOCKS
-       ========================================================= */
-
-    .world-grid {
-      position: relative;
-      z-index: 5;
-
-      height: calc(100% - 48px);
-
-      display: grid;
-
-      grid-template-columns:
-        repeat(2, 1fr);
-
-      gap: 10px;
-
-      align-content: center;
-    }
-
-    .city {
-      min-height: 100px;
-
-      padding: 14px;
-
-      border:
-        1px solid var(--line);
-
-      border-radius: 10px;
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.025),
-          transparent
-        );
-
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .city-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .city-name {
-      font-size: 10px;
-
-      letter-spacing: 1.5px;
-
-      color: var(--muted);
-    }
-
-    .city-code {
-      font-size: 9px;
-
-      color: #4f5b67;
-
-      letter-spacing: 1px;
-    }
-
-    .city-time {
-      margin-top: 10px;
-
-      font-size: 28px;
-
-      font-weight: 300;
-
-      font-variant-numeric: tabular-nums;
-    }
-
-    .city-date {
-      margin-top: 4px;
-
-      font-size: 9px;
-
-      color: #586572;
-    }
-
-    /* =========================================================
-       ACTIVE PANEL CONTENT
-       ========================================================= */
-
-    .panel.active .clock {
-      text-shadow:
-        0 0 28px
-        rgba(95, 211, 255, 0.14);
-    }
-
-    /* =========================================================
-       RESPONSIVE
-       ========================================================= */
-
-    @media (max-width: 720px) {
-
-      html,
-      body {
-        overflow: auto;
-      }
-
-      .dashboard {
-        width: 100%;
-        height: auto;
-        min-height: 100vh;
-
-        grid-template-columns: 1fr;
-
-        grid-template-rows:
-          repeat(4, minmax(320px, 1fr));
-
-        perspective: none;
-      }
-
+    .corner.tl { top: -1px; left: -1px; border-top: 1.5px solid; border-left: 1.5px solid; }
+    .corner.br { bottom: -1px; right: -1px; border-bottom: 1.5px solid; border-right: 1.5px solid; }
+
+    /* SVG Map Styling */
+    .graticule { stroke: rgba(127, 139, 152, 0.15); stroke-width: 0.6; fill: none; }
+    .land { fill: #17202a; stroke: #2a3744; stroke-width: 1; }
+    .india-marker { fill: #5fd3ff; filter: drop-shadow(0 0 6px rgba(95, 211, 255, 0.9)); }
+    .map-label { font-size: 9px; fill: #596673; letter-spacing: 1px; font-family: monospace; }
+
+    @media (max-width: 1024px) {
+      .dashboard { perspective: none; }
+      .panel:hover:not(.active),
       .panel.active,
-      .dashboard.has-active .panel:not(.active),
-      .panel:hover:not(.active) {
-        transform: none;
-      }
-
-      .dashboard.has-active .panel:not(.active) {
-        opacity: 0.7;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .panel {
-        transition: none;
-      }
+      .dashboard.has-active .panel:not(.active) { transform: none; }
     }
   </style>
 </head>
 
-<body>
+<body class="bg-[#080b10] text-[#edf2f7] min-h-screen flex flex-col font-sans selection:bg-[#5fd3ff] selection:text-black">
 
-  <main class="dashboard">
+  <!-- Top Navigation Bar -->
+  <header class="flex items-center justify-between px-6 py-3 border-b border-[#25303c]/60 bg-[#0e131a]/90 backdrop-blur z-30">
+    <div class="flex items-center gap-3">
+      <a href="index.html" class="flex items-center gap-1.5 text-xs font-mono text-[#7f8b98] hover:text-[#5fd3ff] transition">
+        <span>←</span>
+        <span>Portfolio</span>
+      </a>
+      <span class="text-[#25303c]">/</span>
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-[#79d99b] shadow-[0_0_8px_rgba(121,217,155,0.8)]"></span>
+        <span class="text-xs font-mono uppercase tracking-widest text-[#edf2f7] font-semibold">World Utility Console</span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <span class="text-[11px] font-mono text-[#7f8b98] border border-[#25303c] rounded px-2 py-0.5 bg-[#111821]">Twind CSS (13KB)</span>
+    </div>
+  </header>
+
+  <!-- 3D Console Dashboard Grid -->
+  <main class="dashboard grid grid-cols-1 lg:grid-cols-2 gap-4 p-4 flex-1 h-auto lg:h-[calc(100vh-49px)] box-border">
 
     <!-- =====================================================
-         1. CLOCK
+         1. LOCAL CLOCK
          ===================================================== -->
-
-    <section class="panel clock-panel">
-
+    <section class="panel clock-panel relative min-w-0 min-h-[340px] p-6 rounded-2xl bg-[#0e131a] border border-[#25303c] overflow-hidden flex flex-col justify-between shadow-xl">
       <span class="corner tl"></span>
       <span class="corner br"></span>
 
-      <div class="panel-header">
-
-        <div class="label">
-          Local Time
-        </div>
-
-        <div class="status">
-          <span class="status-dot"></span>
+      <!-- Panel Header -->
+      <div class="flex items-center justify-between mb-4 relative z-10">
+        <span class="text-[10px] uppercase tracking-widest text-[#7f8b98] font-mono font-semibold">Local Time</span>
+        <div class="flex items-center gap-1.5 text-[10px] font-mono text-[#79d99b] uppercase tracking-wider">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#79d99b] shadow-[0_0_6px_#79d99b]"></span>
           System Online
         </div>
-
       </div>
 
-      <div class="clock-content">
-
-        <div
-          id="clock"
-          class="clock"
-        >
+      <!-- Clock Display -->
+      <div class="flex flex-col items-center justify-center flex-1 text-center relative z-10 my-auto py-2">
+        <div id="clock" class="text-6xl sm:text-7xl lg:text-8xl font-light font-mono tracking-tight text-[#edf2f7] tabular-nums">
           00:00:00
         </div>
-
-        <div id="clockUnit" class="clock-unit">
+        <div id="clockUnit" class="text-xs uppercase tracking-widest text-[#5fd3ff] font-mono font-medium mt-3">
           India Standard Time
         </div>
-
-        <div
-          id="date"
-          class="date"
-        >
+        <div id="date" class="text-sm text-[#7f8b98] mt-2 font-medium">
           Loading...
         </div>
-
-        <div id="location" class="location">
+        <div id="location" class="text-xs text-[#aab4bf] mt-1 font-mono">
           Gorakhpur · Uttar Pradesh · India
         </div>
-
       </div>
 
-      <div class="clock-meta">
-
+      <!-- Clock Meta Footer -->
+      <div class="flex items-center gap-4 text-[10px] font-mono uppercase tracking-wider text-[#56616d] pt-3 border-t border-[#1a232d] relative z-10">
         <span>LOCAL</span>
         <span>24 HOUR</span>
-        <span id="utcOffset">
-          UTC+05:30
-        </span>
-
+        <span id="utcOffset" class="text-[#7f8b98] ml-auto">UTC+05:30</span>
       </div>
-
     </section>
-
 
     <!-- =====================================================
          2. WORLD MAP
          ===================================================== -->
-
-    <section class="panel map-panel">
-
+    <section class="panel map-panel relative min-w-0 min-h-[340px] p-6 rounded-2xl bg-[#0e131a] border border-[#25303c] overflow-hidden flex flex-col justify-between shadow-xl">
       <span class="corner tl"></span>
       <span class="corner br"></span>
 
-      <div class="panel-header">
-
-        <div class="label">
-          Global View
-        </div>
-
-        <div class="status">
-          <span class="status-dot"></span>
+      <!-- Panel Header -->
+      <div class="flex items-center justify-between mb-3 relative z-10">
+        <span class="text-[10px] uppercase tracking-widest text-[#7f8b98] font-mono font-semibold">Global View</span>
+        <div class="flex items-center gap-1.5 text-[10px] font-mono text-[#5fd3ff] uppercase tracking-wider">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#5fd3ff] shadow-[0_0_6px_#5fd3ff]"></span>
           Live Position
         </div>
-
       </div>
 
-      <div class="map-wrap">
+      <!-- SVG Map Wrapper -->
+      <div class="flex-1 w-full rounded-xl border border-[#1a232d] bg-[#0b1016] p-3 relative overflow-hidden flex items-center justify-center">
+        <svg viewBox="0 0 1000 500" class="w-full h-full max-h-[280px]" aria-label="World map">
+          <!-- Grid -->
+          <path class="graticule" d="M0 125 H1000" />
+          <path class="graticule" d="M0 250 H1000" />
+          <path class="graticule" d="M0 375 H1000" />
+          <path class="graticule" d="M125 0 V500" />
+          <path class="graticule" d="M250 0 V500" />
+          <path class="graticule" d="M375 0 V500" />
+          <path class="graticule" d="M500 0 V500" />
+          <path class="graticule" d="M625 0 V500" />
+          <path class="graticule" d="M750 0 V500" />
+          <path class="graticule" d="M875 0 V500" />
 
-        <div class="world-map">
+          <!-- North America -->
+          <path class="land" d="M80 125 L115 95 L190 92 L250 125 L275 160 L240 188 L212 182 L190 218 L151 210 L132 183 L102 172 L92 145 Z" />
+          <!-- South America -->
+          <path class="land" d="M270 235 L305 255 L324 300 L318 347 L294 400 L268 443 L247 397 L259 347 L246 306 L252 271 Z" />
+          <!-- Europe -->
+          <path class="land" d="M455 120 L490 105 L530 115 L544 143 L519 158 L482 155 L462 142 Z" />
+          <!-- Asia -->
+          <path class="land" d="M525 115 L602 88 L690 92 L768 112 L837 148 L868 179 L831 208 L774 201 L724 183 L674 188 L626 166 L572 168 L543 145 Z" />
+          <!-- Africa -->
+          <path class="land" d="M478 195 L528 190 L570 216 L588 263 L575 322 L547 370 L510 399 L486 364 L472 314 L456 263 Z" />
+          <!-- Australia -->
+          <path class="land" d="M751 331 L813 312 L867 331 L898 366 L868 399 L808 411 L764 394 L740 363 Z" />
 
-          <svg
-            viewBox="0 0 1000 500"
-            aria-label="World map"
-          >
+          <!-- India marker -->
+          <circle class="india-marker" cx="657" cy="192" r="6" />
 
-            <!-- Grid -->
-
-            <path
-              class="graticule"
-              d="M0 125 H1000"
-            />
-
-            <path
-              class="graticule"
-              d="M0 250 H1000"
-            />
-
-            <path
-              class="graticule"
-              d="M0 375 H1000"
-            />
-
-            <path
-              class="graticule"
-              d="M125 0 V500"
-            />
-
-            <path
-              class="graticule"
-              d="M250 0 V500"
-            />
-
-            <path
-              class="graticule"
-              d="M375 0 V500"
-            />
-
-            <path
-              class="graticule"
-              d="M500 0 V500"
-            />
-
-            <path
-              class="graticule"
-              d="M625 0 V500"
-            />
-
-            <path
-              class="graticule"
-              d="M750 0 V500"
-            />
-
-            <path
-              class="graticule"
-              d="M875 0 V500"
-            />
-
-            <!-- North America -->
-
-            <path
-              class="land"
-              d="
-                M80 125
-                L115 95
-                L190 92
-                L250 125
-                L275 160
-                L240 188
-                L212 182
-                L190 218
-                L151 210
-                L132 183
-                L102 172
-                L92 145
-                Z
-              "
-            />
-
-            <!-- South America -->
-
-            <path
-              class="land"
-              d="
-                M270 235
-                L305 255
-                L324 300
-                L318 347
-                L294 400
-                L268 443
-                L247 397
-                L259 347
-                L246 306
-                L252 271
-                Z
-              "
-            />
-
-            <!-- Europe -->
-
-            <path
-              class="land"
-              d="
-                M455 120
-                L490 105
-                L530 115
-                L544 143
-                L519 158
-                L482 155
-                L462 142
-                Z
-              "
-            />
-
-            <!-- Asia -->
-
-            <path
-              class="land"
-              d="
-                M525 115
-                L602 88
-                L690 92
-                L768 112
-                L837 148
-                L868 179
-                L831 208
-                L774 201
-                L724 183
-                L674 188
-                L626 166
-                L572 168
-                L543 145
-                Z
-              "
-            />
-
-            <!-- Africa -->
-
-            <path
-              class="land"
-              d="
-                M478 195
-                L528 190
-                L570 216
-                L588 263
-                L575 322
-                L547 370
-                L510 399
-                L486 364
-                L472 314
-                L456 263
-                Z
-              "
-            />
-
-            <!-- Australia -->
-
-            <path
-              class="land"
-              d="
-                M751 331
-                L813 312
-                L867 331
-                L898 366
-                L868 399
-                L808 411
-                L764 394
-                L740 363
-                Z
-              "
-            />
-
-            <!-- India marker -->
-
-            <circle
-              class="india-marker"
-              cx="657"
-              cy="192"
-              r="6"
-            />
-
-            <!-- Labels -->
-
-            <text
-              x="105"
-              y="70"
-              class="map-label"
-            >
-              NORTH AMERICA
-            </text>
-
-            <text
-              x="455"
-              y="92"
-              class="map-label"
-            >
-              EUROPE
-            </text>
-
-            <text
-              x="615"
-              y="73"
-              class="map-label"
-            >
-              ASIA
-            </text>
-
-            <text
-              x="490"
-              y="420"
-              class="map-label"
-            >
-              AFRICA
-            </text>
-
-            <text
-              x="755"
-              y="438"
-              class="map-label"
-            >
-              AUSTRALIA
-            </text>
-
-          </svg>
-
-        </div>
-
-        <div class="map-footer">
-
-          <span>
-            INDIA · 26.76°N 83.37°E
-          </span>
-
-          <span>
-            WORLD GRID
-          </span>
-
-        </div>
-
+          <!-- Labels -->
+          <text x="105" y="70" class="map-label">NORTH AMERICA</text>
+          <text x="455" y="92" class="map-label">EUROPE</text>
+          <text x="615" y="73" class="map-label">ASIA</text>
+          <text x="490" y="420" class="map-label">AFRICA</text>
+          <text x="755" y="438" class="map-label">AUSTRALIA</text>
+        </svg>
       </div>
 
+      <!-- Map Footer -->
+      <div class="flex items-center justify-between text-[10px] font-mono text-[#56616d] pt-3 border-t border-[#1a232d] relative z-10">
+        <span>INDIA · 26.76°N 83.37°E</span>
+        <span>WORLD GRID</span>
+      </div>
     </section>
-
 
     <!-- =====================================================
          3. CALCULATOR
          ===================================================== -->
-
-    <section class="panel">
-
+    <section class="panel relative min-w-0 min-h-[340px] p-6 rounded-2xl bg-[#0e131a] border border-[#25303c] overflow-hidden flex flex-col justify-between shadow-xl">
       <span class="corner tl"></span>
       <span class="corner br"></span>
 
-      <div class="panel-header">
-
-        <div class="label">
-          Calculator
-        </div>
-
-        <div class="status">
-          Local
-        </div>
-
+      <!-- Panel Header -->
+      <div class="flex items-center justify-between mb-3 relative z-10">
+        <span class="text-[10px] uppercase tracking-widest text-[#7f8b98] font-mono font-semibold">Calculator</span>
+        <span class="text-[10px] font-mono text-[#7f8b98] uppercase tracking-wider">Standard Arithmetic</span>
       </div>
 
-      <div class="calculator">
-
-        <div
-          id="display"
-          class="display"
-        >
+      <!-- Calculator Body -->
+      <div class="flex flex-col flex-1 justify-between relative z-10">
+        <!-- Display -->
+        <div id="display" class="w-full bg-[#080b10] border border-[#25303c] rounded-xl px-4 py-3 text-right font-mono text-3xl font-light text-[#edf2f7] overflow-x-auto tabular-nums shadow-inner mb-3">
           0
         </div>
 
-        <div class="calculator-subtitle">
-          Standard Arithmetic
+        <!-- Keys Grid -->
+        <div class="grid grid-cols-4 gap-2 flex-1">
+          <button type="button" onclick="clearCalculator()" class="rounded-lg bg-[#251515] hover:bg-[#331c1c] text-[#ff7676] font-mono font-semibold text-sm py-2.5 transition active:scale-95 border border-[#3d2020]">C</button>
+          <button type="button" onclick="backspace()" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-sm py-2.5 transition active:scale-95 border border-[#1a232d]">⌫</button>
+          <button type="button" onclick="percentage()" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-sm py-2.5 transition active:scale-95 border border-[#1a232d]">%</button>
+          <button type="button" onclick="setOperator('/')" class="rounded-lg bg-[#0e2230] hover:bg-[#143247] text-[#5fd3ff] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a354a]">÷</button>
+
+          <button type="button" onclick="number('7')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">7</button>
+          <button type="button" onclick="number('8')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">8</button>
+          <button type="button" onclick="number('9')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">9</button>
+          <button type="button" onclick="setOperator('*')" class="rounded-lg bg-[#0e2230] hover:bg-[#143247] text-[#5fd3ff] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a354a]">×</button>
+
+          <button type="button" onclick="number('4')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">4</button>
+          <button type="button" onclick="number('5')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">5</button>
+          <button type="button" onclick="number('6')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">6</button>
+          <button type="button" onclick="setOperator('-')" class="rounded-lg bg-[#0e2230] hover:bg-[#143247] text-[#5fd3ff] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a354a]">−</button>
+
+          <button type="button" onclick="number('1')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">1</button>
+          <button type="button" onclick="number('2')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">2</button>
+          <button type="button" onclick="number('3')" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">3</button>
+          <button type="button" onclick="setOperator('+')" class="rounded-lg bg-[#0e2230] hover:bg-[#143247] text-[#5fd3ff] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a354a]">+</button>
+
+          <button type="button" onclick="number('0')" class="col-span-2 rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">0</button>
+          <button type="button" onclick="decimal()" class="rounded-lg bg-[#111821] hover:bg-[#192230] text-[#edf2f7] font-mono text-base py-2.5 transition active:scale-95 border border-[#1a232d]">.</button>
+          <button type="button" onclick="calculate()" class="rounded-lg bg-[#5fd3ff] hover:bg-[#4bc0ec] text-[#080b10] font-mono font-bold text-base py-2.5 transition active:scale-95 shadow-md shadow-[#5fd3ff]/10">=</button>
         </div>
-
-        <div class="keys">
-
-          <button
-            class="clear"
-            onclick="clearCalculator()"
-          >
-            C
-          </button>
-
-          <button onclick="backspace()">
-            ⌫
-          </button>
-
-          <button onclick="percentage()">
-            %
-          </button>
-
-          <button
-            class="operator"
-            onclick="setOperator('/')"
-          >
-            ÷
-          </button>
-
-          <button onclick="number('7')">
-            7
-          </button>
-
-          <button onclick="number('8')">
-            8
-          </button>
-
-          <button onclick="number('9')">
-            9
-          </button>
-
-          <button
-            class="operator"
-            onclick="setOperator('*')"
-          >
-            ×
-          </button>
-
-          <button onclick="number('4')">
-            4
-          </button>
-
-          <button onclick="number('5')">
-            5
-          </button>
-
-          <button onclick="number('6')">
-            6
-          </button>
-
-          <button
-            class="operator"
-            onclick="setOperator('-')"
-          >
-            −
-          </button>
-
-          <button onclick="number('1')">
-            1
-          </button>
-
-          <button onclick="number('2')">
-            2
-          </button>
-
-          <button onclick="number('3')">
-            3
-          </button>
-
-          <button
-            class="operator"
-            onclick="setOperator('+')"
-          >
-            +
-          </button>
-
-          <button onclick="number('0')">
-            0
-          </button>
-
-          <button onclick="decimal()">
-            .
-          </button>
-
-          <button
-            class="equals"
-            onclick="calculate()"
-          >
-            =
-          </button>
-
-        </div>
-
       </div>
-
     </section>
-
 
     <!-- =====================================================
          4. WORLD CLOCKS
          ===================================================== -->
-
-    <section class="panel">
-
+    <section class="panel relative min-w-0 min-h-[340px] p-6 rounded-2xl bg-[#0e131a] border border-[#25303c] overflow-hidden flex flex-col justify-between shadow-xl">
       <span class="corner tl"></span>
       <span class="corner br"></span>
 
-      <div class="panel-header">
-
-        <div class="label">
-          World Time
-        </div>
-
-        <div class="status">
-          <span class="status-dot"></span>
+      <!-- Panel Header -->
+      <div class="flex items-center justify-between mb-3 relative z-10">
+        <span class="text-[10px] uppercase tracking-widest text-[#7f8b98] font-mono font-semibold">World Time</span>
+        <div class="flex items-center gap-1.5 text-[10px] font-mono text-[#79d99b] uppercase tracking-wider">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#79d99b] shadow-[0_0_6px_#79d99b]"></span>
           Synchronized
         </div>
-
       </div>
 
-      <div class="world-grid">
-
-        <article class="city">
-
-          <div class="city-top">
-
-            <div class="city-name">
-              NEW YORK
-            </div>
-
-            <div class="city-code">
-              EST / EDT
-            </div>
-
+      <!-- World Clocks Grid -->
+      <div class="grid grid-cols-2 gap-3 flex-1 relative z-10">
+        <!-- New York -->
+        <article class="bg-[#0b1016] border border-[#1a232d] hover:border-[#25303c] rounded-xl p-3.5 flex flex-col justify-between transition">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold tracking-wider text-[#edf2f7]">NEW YORK</span>
+            <span class="text-[10px] font-mono text-[#7f8b98] bg-[#111821] px-1.5 py-0.5 rounded">EDT</span>
           </div>
-
-          <div
-            id="newYork"
-            class="city-time"
-          >
-            --:--:--
-          </div>
-
-          <div
-            id="newYorkDate"
-            class="city-date"
-          >
-            ---
-          </div>
-
+          <div id="newYork" class="text-2xl font-light font-mono text-[#edf2f7] tabular-nums my-1">--:--:--</div>
+          <div id="newYorkDate" class="text-[11px] font-mono text-[#7f8b98]">---</div>
         </article>
 
-
-        <article class="city">
-
-          <div class="city-top">
-
-            <div class="city-name">
-              LONDON
-            </div>
-
-            <div class="city-code">
-              GMT / BST
-            </div>
-
+        <!-- London -->
+        <article class="bg-[#0b1016] border border-[#1a232d] hover:border-[#25303c] rounded-xl p-3.5 flex flex-col justify-between transition">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold tracking-wider text-[#edf2f7]">LONDON</span>
+            <span class="text-[10px] font-mono text-[#7f8b98] bg-[#111821] px-1.5 py-0.5 rounded">BST</span>
           </div>
-
-          <div
-            id="london"
-            class="city-time"
-          >
-            --:--:--
-          </div>
-
-          <div
-            id="londonDate"
-            class="city-date"
-          >
-            ---
-          </div>
-
+          <div id="london" class="text-2xl font-light font-mono text-[#edf2f7] tabular-nums my-1">--:--:--</div>
+          <div id="londonDate" class="text-[11px] font-mono text-[#7f8b98]">---</div>
         </article>
 
-
-        <article class="city">
-
-          <div class="city-top">
-
-            <div class="city-name">
-              DUBAI
-            </div>
-
-            <div class="city-code">
-              GST
-            </div>
-
+        <!-- Dubai -->
+        <article class="bg-[#0b1016] border border-[#1a232d] hover:border-[#25303c] rounded-xl p-3.5 flex flex-col justify-between transition">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold tracking-wider text-[#edf2f7]">DUBAI</span>
+            <span class="text-[10px] font-mono text-[#7f8b98] bg-[#111821] px-1.5 py-0.5 rounded">GST</span>
           </div>
-
-          <div
-            id="dubai"
-            class="city-time"
-          >
-            --:--:--
-          </div>
-
-          <div
-            id="dubaiDate"
-            class="city-date"
-          >
-            ---
-          </div>
-
+          <div id="dubai" class="text-2xl font-light font-mono text-[#edf2f7] tabular-nums my-1">--:--:--</div>
+          <div id="dubaiDate" class="text-[11px] font-mono text-[#7f8b98]">---</div>
         </article>
 
-
-        <article class="city">
-
-          <div class="city-top">
-
-            <div class="city-name">
-              TOKYO
-            </div>
-
-            <div class="city-code">
-              JST
-            </div>
-
+        <!-- Tokyo -->
+        <article class="bg-[#0b1016] border border-[#1a232d] hover:border-[#25303c] rounded-xl p-3.5 flex flex-col justify-between transition">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold tracking-wider text-[#edf2f7]">TOKYO</span>
+            <span class="text-[10px] font-mono text-[#7f8b98] bg-[#111821] px-1.5 py-0.5 rounded">JST</span>
           </div>
-
-          <div
-            id="tokyo"
-            class="city-time"
-          >
-            --:--:--
-          </div>
-
-          <div
-            id="tokyoDate"
-            class="city-date"
-          >
-            ---
-          </div>
-
+          <div id="tokyo" class="text-2xl font-light font-mono text-[#edf2f7] tabular-nums my-1">--:--:--</div>
+          <div id="tokyoDate" class="text-[11px] font-mono text-[#7f8b98]">---</div>
         </article>
-
       </div>
-
     </section>
 
   </main>
 
-
   <script>
-
     /* =========================================================
-       LOCAL CLOCK
+       LOCAL CLOCK (OPTIMIZED)
        ========================================================= */
 
     function updateLocalClock() {
-
       const now = new Date();
 
       document.getElementById("clock").textContent =
@@ -1399,29 +368,12 @@
           year: "numeric"
         });
 
-      const offsetMinutes =
-        -now.getTimezoneOffset();
+      const offsetMinutes = -now.getTimezoneOffset();
+      const sign = offsetMinutes >= 0 ? "+" : "-";
+      const hours = String(Math.floor(Math.abs(offsetMinutes) / 60)).padStart(2, "0");
+      const minutes = String(Math.abs(offsetMinutes) % 60).padStart(2, "0");
 
-      const sign =
-        offsetMinutes >= 0
-          ? "+"
-          : "-";
-
-      const hours =
-        String(
-          Math.floor(
-            Math.abs(offsetMinutes) / 60
-          )
-        ).padStart(2, "0");
-
-      const minutes =
-        String(
-          Math.abs(offsetMinutes) % 60
-        ).padStart(2, "0");
-
-      document.getElementById("utcOffset")
-        .textContent =
-        `UTC${sign}${hours}:${minutes}`;
+      document.getElementById("utcOffset").textContent = `UTC${sign}${hours}:${minutes}`;
 
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
       const unitEl = document.getElementById("clockUnit");
@@ -1440,33 +392,15 @@
 
 
     /* =========================================================
-       WORLD CLOCKS
+       WORLD CLOCKS (PRE-INSTANTIATED FORMATTERS)
        ========================================================= */
 
     const cities = {
-
-      newYork: {
-        zone: "America/New_York",
-        dateId: "newYorkDate"
-      },
-
-      london: {
-        zone: "Europe/London",
-        dateId: "londonDate"
-      },
-
-      dubai: {
-        zone: "Asia/Dubai",
-        dateId: "dubaiDate"
-      },
-
-      tokyo: {
-        zone: "Asia/Tokyo",
-        dateId: "tokyoDate"
-      }
-
+      newYork: { zone: "America/New_York", dateId: "newYorkDate" },
+      london: { zone: "Europe/London", dateId: "londonDate" },
+      dubai: { zone: "Asia/Dubai", dateId: "dubaiDate" },
+      tokyo: { zone: "Asia/Tokyo", dateId: "tokyoDate" }
     };
-
 
     Object.values(cities).forEach(config => {
       config.timeFormatter = new Intl.DateTimeFormat("en-US", {
@@ -1484,29 +418,17 @@
       });
     });
 
-
     function updateWorldClocks() {
-
       const now = new Date();
-
-      Object.entries(cities)
-        .forEach(([city, config]) => {
-
-          document.getElementById(city)
-            .textContent =
-            config.timeFormatter.format(now);
-
-          document.getElementById(
-            config.dateId
-          ).textContent =
-            config.dateFormatter.format(now);
-
-        });
+      Object.entries(cities).forEach(([city, config]) => {
+        document.getElementById(city).textContent = config.timeFormatter.format(now);
+        document.getElementById(config.dateId).textContent = config.dateFormatter.format(now);
+      });
     }
 
 
     /* =========================================================
-       CALCULATOR
+       CALCULATOR LOGIC
        ========================================================= */
 
     let current = "";
@@ -1514,343 +436,151 @@
     let operator = null;
     let resetDisplay = false;
 
-    const display =
-      document.getElementById("display");
-
+    const display = document.getElementById("display");
 
     function render() {
-
-      display.textContent =
-        current || "0";
-
+      display.textContent = current || "0";
     }
 
-
     function number(value) {
-
       if (resetDisplay || current === "Error") {
         current = "";
         resetDisplay = false;
       }
-
       if (current === "0") {
         current = value;
       } else {
         current += value;
       }
-
       render();
-
     }
 
-
     function decimal() {
-
       if (resetDisplay || current === "Error") {
         current = "";
         resetDisplay = false;
       }
-
       if (!current.includes(".")) {
-
-        current +=
-          current
-            ? "."
-            : "0.";
-
+        current += current ? "." : "0.";
       }
-
       render();
-
     }
 
-
     function setOperator(value) {
-
       if (!current || current === "Error") {
         return;
       }
-
-      if (
-        previous &&
-        operator &&
-        !resetDisplay
-      ) {
+      if (previous && operator && !resetDisplay) {
         calculate();
       }
-
       previous = current;
-
       operator = value;
-
       resetDisplay = true;
-
     }
 
-
     function calculate() {
-
-      if (
-        !previous ||
-        !current ||
-        !operator
-      ) {
+      if (!previous || !current || !operator) {
         return;
       }
-
       const a = Number(previous);
       const b = Number(current);
-
       let result;
 
       switch (operator) {
-
-        case "+":
-          result = a + b;
-          break;
-
-        case "-":
-          result = a - b;
-          break;
-
-        case "*":
-          result = a * b;
-          break;
-
-        case "/":
-
-          result =
-            b === 0
-              ? "Error"
-              : a / b;
-
-          break;
-
+        case "+": result = a + b; break;
+        case "-": result = a - b; break;
+        case "*": result = a * b; break;
+        case "/": result = b === 0 ? "Error" : a / b; break;
       }
 
-      current =
-        typeof result === "number"
-          ? String(
-              Number(
-                result.toFixed(10)
-              )
-            )
-          : result;
+      current = typeof result === "number"
+        ? String(Number(result.toFixed(10)))
+        : result;
 
       previous = "";
       operator = null;
       resetDisplay = true;
-
       render();
-
     }
 
-
     function clearCalculator() {
-
       current = "";
       previous = "";
       operator = null;
       resetDisplay = false;
-
       render();
-
     }
-
 
     function backspace() {
-
-      if (
-        !current ||
-        resetDisplay ||
-        current === "Error"
-      ) {
+      if (!current || resetDisplay || current === "Error") {
         return;
       }
-
-      current =
-        current.slice(0, -1);
-
+      current = current.slice(0, -1);
       render();
-
     }
 
-
     function percentage() {
-
       if (!current || current === "Error") {
         return;
       }
-
-      current =
-        String(
-          Number(current) / 100
-        );
-
+      current = String(Number(current) / 100);
       render();
-
     }
 
 
     /* =========================================================
-       CALCULATOR KEYBOARD
+       KEYBOARD SHORTCUTS
        ========================================================= */
 
-    document.addEventListener(
-      "keydown",
-      event => {
-
-        if (
-          event.key >= "0" &&
-          event.key <= "9"
-        ) {
-          number(event.key);
-        }
-
-        else if (
-          event.key === "."
-        ) {
-          decimal();
-        }
-
-        else if (
-          event.key === "+" ||
-          event.key === "-" ||
-          event.key === "*" ||
-          event.key === "/"
-        ) {
-          setOperator(event.key);
-        }
-
-        else if (
-          event.key === "Enter" ||
-          event.key === "="
-        ) {
-          calculate();
-        }
-
-        else if (
-          event.key === "Backspace"
-        ) {
-          backspace();
-        }
-
-        else if (
-          event.key === "Escape"
-        ) {
-          clearCalculator();
-        }
-
-        else if (
-          event.key === "%"
-        ) {
-          percentage();
-        }
-
-      }
-    );
-
-
-    /* =========================================================
-       3D PANEL INTERACTION
-       ========================================================= */
-
-    const dashboard =
-      document.querySelector(
-        ".dashboard"
-      );
-
-    const panels =
-      document.querySelectorAll(
-        ".panel"
-      );
-
-
-    panels.forEach(panel => {
-
-      panel.addEventListener(
-        "click",
-        event => {
-
-          const isControl =
-            Boolean(event.target.closest("button, input, a"));
-
-          const active =
-            panel.classList.contains(
-              "active"
-            );
-
-          /*
-            If user clicked a control (e.g. calculator button),
-            ensure this panel is active, but do NOT close it if already active.
-          */
-          if (isControl) {
-            if (!active) {
-              panels.forEach(item => {
-                item.classList.remove("active");
-              });
-              panel.classList.add("active");
-              dashboard.classList.add("has-active");
-            }
-            return;
-          }
-
-          panels.forEach(item => {
-            item.classList.remove(
-              "active"
-            );
-          });
-
-          if (active) {
-
-            dashboard.classList.remove(
-              "has-active"
-            );
-
-          } else {
-
-            panel.classList.add(
-              "active"
-            );
-
-            dashboard.classList.add(
-              "has-active"
-            );
-
-          }
-
-        }
-      );
-
+    document.addEventListener("keydown", event => {
+      if (event.key >= "0" && event.key <= "9") number(event.key);
+      else if (event.key === ".") decimal();
+      else if (event.key === "+" || event.key === "-" || event.key === "*" || event.key === "/") setOperator(event.key);
+      else if (event.key === "Enter" || event.key === "=") calculate();
+      else if (event.key === "Backspace") backspace();
+      else if (event.key === "Escape") clearCalculator();
+      else if (event.key === "%") percentage();
     });
 
 
     /* =========================================================
-       ESCAPE = RETURN TO FLAT DASHBOARD
+       3D PANEL ELEVATION INTERACTION
        ========================================================= */
 
-    document.addEventListener(
-      "keydown",
-      event => {
+    const dashboard = document.querySelector(".dashboard");
+    const panels = document.querySelectorAll(".panel");
 
-        if (
-          event.key === "Escape"
-        ) {
+    panels.forEach(panel => {
+      panel.addEventListener("click", event => {
+        const isControl = Boolean(event.target.closest("button, input, a"));
+        const active = panel.classList.contains("active");
 
-          panels.forEach(panel => {
-            panel.classList.remove(
-              "active"
-            );
-          });
-
-          dashboard.classList.remove(
-            "has-active"
-          );
-
+        if (isControl) {
+          if (!active) {
+            panels.forEach(item => item.classList.remove("active"));
+            panel.classList.add("active");
+            dashboard.classList.add("has-active");
+          }
+          return;
         }
 
+        panels.forEach(item => item.classList.remove("active"));
+        if (active) {
+          dashboard.classList.remove("has-active");
+        } else {
+          panel.classList.add("active");
+          dashboard.classList.add("has-active");
+        }
+      });
+    });
+
+    // Escape collapses active panel
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        panels.forEach(panel => panel.classList.remove("active"));
+        dashboard.classList.remove("has-active");
       }
-    );
+    });
 
 
     /* =========================================================
@@ -1859,18 +589,8 @@
 
     updateLocalClock();
     updateWorldClocks();
-
-    setInterval(
-      updateLocalClock,
-      1000
-    );
-
-    setInterval(
-      updateWorldClocks,
-      1000
-    );
-
+    setInterval(updateLocalClock, 1000);
+    setInterval(updateWorldClocks, 1000);
   </script>
-
 </body>
 </html>
